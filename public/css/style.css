@@ -36,6 +36,10 @@ body {
   overflow-x: hidden;
 }
 
+.active{
+  color:var(--saffron) !important;
+}
+
 /* ══════════════════════════════════════
        SCROLLBAR
     ══════════════════════════════════════ */
