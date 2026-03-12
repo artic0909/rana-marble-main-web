@@ -1,0 +1,450 @@
+/* ═══════════════════════════════════ ABOUT US PAGE STYLES ═══════════════════════════════════ */
+
+/* Spiritual Animations */
+@keyframes slowRotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes floatSpiritual {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.2;
+    }
+
+    50% {
+        transform: translateY(-25px) scale(1.15);
+        opacity: 0.6;
+    }
+}
+
+@keyframes glowText {
+
+    0%,
+    100% {
+        text-shadow: 0 0 10px rgba(212, 142, 61, 0.1);
+    }
+
+    50% {
+        text-shadow: 0 0 25px rgba(212, 142, 61, 0.6), 0 0 10px rgba(212, 142, 61, 0.3);
+    }
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* About Hero Section */
+.about-hero {
+    position: relative;
+    padding: 160px 20px 100px;
+    background: linear-gradient(to bottom, #fcfaf4 0%, #fff 100%);
+    text-align: center;
+    overflow: hidden;
+}
+
+.spiritual-mandala {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(212, 142, 61, 0.05) 0%, rgba(212, 142, 61, 0) 70%);
+    border: 1px dashed rgba(212, 142, 61, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: slowRotate 45s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.spiritual-mandala::before,
+.spiritual-mandala::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid rgba(212, 142, 61, 0.08);
+}
+
+.spiritual-mandala::before {
+    width: 420px;
+    height: 420px;
+    border-style: dotted;
+}
+
+.spiritual-mandala::after {
+    width: 240px;
+    height: 240px;
+}
+
+.floating-symbol {
+    position: absolute;
+    color: var(--saffron, #D48E3D);
+    z-index: 0;
+    animation: floatSpiritual 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.sym-1 {
+    top: 20%;
+    left: 15%;
+    animation-delay: 0s;
+    font-size: 4.5rem;
+    opacity: 0.15;
+}
+
+.sym-2 {
+    top: 65%;
+    right: 18%;
+    animation-delay: 2s;
+    font-size: 3.5rem;
+    opacity: 0.2;
+}
+
+.sym-3 {
+    bottom: 15%;
+    left: 25%;
+    animation-delay: 4s;
+    font-size: 2.8rem;
+    opacity: 0.15;
+}
+
+.relative-container {
+    position: relative;
+    z-index: 1;
+}
+
+.about-hero-title {
+    font-size: 3.5rem;
+    color: var(--dark-brown, #3b2a1a);
+    font-family: 'Cinzel Decorative', serif;
+    margin-bottom: 24px;
+    animation: fadeInSlideUp 1s ease-out, glowText 4s ease-in-out infinite 1s;
+}
+
+.about-hero-sub {
+    font-size: 1.25rem;
+    color: var(--text-dark, #555);
+    max-width: 750px;
+    margin: 0 auto;
+    font-family: 'Crimson Pro', serif;
+    line-height: 1.8;
+    animation: fadeInSlideUp 1s ease-out 0.3s both;
+}
+
+/* Our Story Section */
+.about-story {
+    padding: 100px 20px;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.story-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.story-content {
+    flex: 1;
+    animation: fadeInSlideUp 1s ease-out 0.6s both;
+}
+
+.story-content h2 {
+    font-size: 2.5rem;
+    font-family: 'Cinzel', serif;
+    color: var(--maroon, #6B1A1A);
+    margin-bottom: 24px;
+    position: relative;
+    display: inline-block;
+}
+
+.story-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--saffron, #D48E3D);
+    transition: width 0.5s ease;
+}
+
+.story-content:hover h2::after {
+    width: 100%;
+}
+
+.story-content p {
+    font-size: 1.1rem;
+    color: #444;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.story-image {
+    flex: 1;
+    position: relative;
+    perspective: 1000px;
+    animation: fadeInSlideUp 1s ease-out 0.8s both;
+}
+
+.story-image img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: transform 0.8s ease, box-shadow 0.8s ease;
+}
+
+.story-image:hover img {
+    transform: scale(1.03) rotateY(-5deg);
+    box-shadow: -10px 25px 50px rgba(0, 0, 0, 0.2);
+}
+
+.story-image::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: 20px;
+    bottom: 20px;
+    border: 2px solid var(--saffron, #D48E3D);
+    border-radius: 12px;
+    z-index: -1;
+    transition: all 0.5s ease;
+}
+
+.story-image:hover::before {
+    top: -10px;
+    left: -10px;
+    right: 10px;
+    bottom: 10px;
+    border-color: var(--maroon, #6B1A1A);
+}
+
+/* Artisans Section */
+.artisans-section {
+    padding: 100px 20px;
+    background-color: #f9f6f0;
+    text-align: center;
+    position: relative;
+}
+
+.artisans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 60px auto 0;
+}
+
+.artisan-card {
+    background: #fff;
+    padding: 50px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    border-top: 4px solid transparent;
+}
+
+.artisan-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(212, 142, 61, 0.15);
+    border-top: 4px solid var(--saffron, #D48E3D);
+}
+
+.artisan-icon {
+    font-size: 3.5rem;
+    color: var(--saffron, #D48E3D);
+    margin-bottom: 24px;
+    transition: transform 0.5s ease;
+}
+
+.artisan-card:hover .artisan-icon {
+    transform: scale(1.15) rotate(8deg);
+}
+
+.artisan-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    color: var(--maroon, #6B1A1A);
+    margin-bottom: 10px;
+}
+
+.artisan-role {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.artisan-desc {
+    color: #555;
+    line-height: 1.7;
+}
+
+/* Responsive Styles for About Page */
+@media (max-width: 1024px) {
+    .about-hero-title {
+        font-size: 3rem;
+    }
+
+    .spiritual-mandala {
+        width: 500px;
+        height: 500px;
+    }
+
+    .spiritual-mandala::before {
+        width: 320px;
+        height: 320px;
+    }
+
+    .story-container {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 120px 20px 80px;
+    }
+
+    .about-hero-title {
+        font-size: 2.2rem;
+    }
+
+    .about-hero-sub {
+        font-size: 1.1rem;
+    }
+
+    .spiritual-mandala {
+        width: 400px;
+        height: 400px;
+    }
+
+    .spiritual-mandala::before {
+        width: 250px;
+        height: 250px;
+    }
+
+    .spiritual-mandala::after {
+        width: 120px;
+        height: 120px;
+    }
+
+    .floating-symbol {
+        font-size: 2.5rem !important;
+        /* Smaller on mobile */
+    }
+
+    .sym-1 {
+        top: 15%;
+        left: 5%;
+        font-size: 3rem !important;
+    }
+
+    .sym-2 {
+        top: 75%;
+        right: 5%;
+        font-size: 2.5rem !important;
+    }
+
+    .sym-3 {
+        bottom: 5%;
+        left: 10%;
+        font-size: 2rem !important;
+    }
+
+    .about-story {
+        padding: 60px 20px;
+    }
+
+    .story-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 50px;
+    }
+
+    .story-content h2::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .story-image::before {
+        top: -10px;
+        left: -10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .artisans-grid {
+        gap: 30px;
+        grid-template-columns: 1fr;
+    }
+
+    .artisans-section {
+        padding: 60px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-hero-title {
+        font-size: 1.8rem;
+    }
+
+    .about-hero {
+        padding: 100px 15px 60px;
+    }
+
+    .story-content h2 {
+        font-size: 2rem;
+    }
+
+    .spiritual-mandala {
+        width: 300px;
+        height: 300px;
+    }
+
+    .spiritual-mandala::before {
+        width: 180px;
+        height: 180px;
+    }
+
+    .artisan-card {
+        padding: 40px 20px;
+    }
+
+    .sym-1 {
+        top: 10%;
+        left: 2%;
+        opacity: 0.1;
+    }
+
+    .sym-2 {
+        top: 80%;
+        right: 2%;
+        opacity: 0.1;
+    }
+}
