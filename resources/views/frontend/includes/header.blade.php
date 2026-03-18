@@ -18,12 +18,9 @@
                         <div class="nav-dropdown">
                             <a href="#" class="dropdown-toggle">Categories <i class="fas fa-chevron-down"></i></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Home Mandirs</a></li>
-                                <li><a href="#">Marble Idols</a></li>
-                                <li><a href="#">Pillars & Columns</a></li>
-                                <li><a href="#">Jaali Panels</a></li>
-                                <li><a href="#">Marble Fountains</a></li>
-                                <li><a href="#">Custom Orders</a></li>
+                                @foreach ($categories as $category)
+                                <li><a href="#">{{ $category->name }}</a></li>
+                                @endforeach
                             </ul>
                         </div>
                     </li>
@@ -63,12 +60,9 @@
                     Categories <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="mobile-dropdown-content">
-                    <a href="mandirs.html">Home Mandirs</a>
-                    <a href="idols.html">Marble Idols</a>
-                    <a href="pillars.html">Pillars & Columns</a>
-                    <a href="wall-panels.html">Jaali Panels</a>
-                    <a href="fountains.html">Marble Fountains</a>
-                    <a href="custom.html">Custom Orders</a>
+                    @foreach ($categories as $category)
+                    <a href="#">{{ $category->name }}</a>
+                    @endforeach
                 </div>
             </div>
             <a href="{{route('about')}}">About Us</a>

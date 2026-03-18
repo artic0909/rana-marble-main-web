@@ -4,11 +4,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@yield('title', 'Rana Marble – Divine Marble Mandirs & Temple Crafts')</title>
-    <meta name="description"
-        content="Rana Marble crafts exquisite handcrafted marble mandirs, temple idols, and spiritual décor. Browse our divine collection and enquire directly via WhatsApp." />
-    <meta name="keywords"
-        content="marble mandir, white marble temple, home temple, pooja mandir, marble idol, handcrafted temple, Rana Marble" />
+
+    <title>@yield('title', $seo['meta_title'] ?? $seo['store_name'] ?? 'Rana Marble')</title>
+    <meta name="description" content="@yield('meta_description', $seo['meta_description'] ?? '')">
+    <meta name="keywords" content="@yield('meta_keywords',    $seo['meta_keywords'] ?? '')">
+
+    <meta property="og:title" content="@yield('title',            $seo['meta_title'] ?? '')">
+    <meta property="og:description" content="@yield('meta_description', $seo['meta_description'] ?? '')">
+    <meta property="og:image" content="@yield('og_image',         $seo['og_image'] ?? '')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title',            $seo['meta_title'] ?? '')">
+    <meta name="twitter:description" content="@yield('meta_description', $seo['meta_description'] ?? '')">
+    <meta name="twitter:image" content="@yield('og_image',         $seo['og_image'] ?? '')">
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

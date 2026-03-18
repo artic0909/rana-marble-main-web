@@ -1,10 +1,17 @@
 <?php
 
+use App\Http\Controllers\Customer\IndexController;
+use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [CustomerController::class, 'index'])->name('home');
+Route::get('/', [IndexController::class, 'index'])->name('home');
+
+// Product details
+Route::get('/{slug}', [ProductController::class, 'index'])->name('product.detail');
+
+
 Route::get('/products', [CustomerController::class, 'allProducts'])->name('allProducts');
 Route::get('/about', [CustomerController::class, 'about'])->name('about');
 Route::get('/contact', [CustomerController::class, 'contact'])->name('contact');

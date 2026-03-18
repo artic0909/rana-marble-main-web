@@ -15,18 +15,13 @@
             }
         </style>
         <!-- Slides -->
+        @foreach($heroBanners as $banner)
         <div class="hero-slide" style="flex: 0 0 100%; height: 100%; scroll-snap-align: start; position: relative;">
-            <img src="./img/hero3.webp" alt="Slide 1"
+            <img src="{{ Storage::url($banner->image) }}"
+                alt="{{ $banner->title }}"
                 style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <div class="hero-slide" style="flex: 0 0 100%; height: 100%; scroll-snap-align: start; position: relative;">
-            <img src="./img/hero3.webp" alt="Slide 2"
-                style="width: 100%; height: 100%; object-fit: cover;" />
-        </div>
-        <div class="hero-slide" style="flex: 0 0 100%; height: 100%; scroll-snap-align: start; position: relative;">
-            <img src="./img/hero3.webp" alt="Slide 3"
-                style="width: 100%; height: 100%; object-fit: cover;" />
-        </div>
+        @endforeach
     </div>
 
     <!-- <div class="hero-mandala" style="pointer-events: none;"></div>
@@ -88,16 +83,16 @@
 
         <div class="product-grid">
 
-            <!-- Product 1 -->
+            @foreach($featuredProducts as $product)
             <div class="product-card">
                 <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Royal Tri-Shikhara White Marble Mandir" loading="lazy" />
+                    <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
                     <div class="product-badge">Bestseller</div>
                     <div class="product-actions">
                         <button class="action-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
                             <i class="fas fa-heart"></i>
                         </button>
-                        <a href="product-detail.html" class="action-btn" title="Quick View">
+                        <a href="{{ route('product.detail', $product->slug) }}" class="action-btn" title="Quick View">
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="https://wa.me/919876543210?text=I am interested in the Royal Tri-Shikhara Mandir"
@@ -107,161 +102,26 @@
                     </div>
                 </div>
                 <div class="product-info">
-                    <div class="product-cat">Home Mandirs</div>
-                    <h3 class="product-name">Royal Tri-Shikhara Mandir</h3>
+                    <!-- <div class="product-cat">Home Mandirs</div> -->
+                    <h3 class="product-name">{{ $product->name }}</h3>
+                    @if($product->variants->count())
+                    @php
+                    $min = $product->variants->min('price');
+                    $max = $product->variants->max('price');
+                    @endphp
                     <div class="product-price"
                         style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; font-family: \'Cinzel\', serif;">
-                        Price: ₹ 1,50,000</div>
-                    <div class="product-meta">
-                        <div class="product-size"><i class="fas fa-ruler-combined"></i> 3 × 2 ft</div>
-
+                        Price: ₹{{ number_format($min, 2) }}
+                                @if($min != $max) — ₹{{ number_format($max, 2) }} @endif
                     </div>
+                    @endif
                     <div class="product-meta" style="margin-top: 10px;">
-                        <a href="product-detail.html" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
+                        <a href="{{ route('product.detail', $product->slug) }}" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
                     </div>
 
                 </div>
             </div>
-
-            <!-- Product 2 -->
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Om Suraj Gold-Painted Marble Mandir" loading="lazy" />
-                    <div class="product-badge new">New Arrival</div>
-                    <div class="product-actions">
-                        <button class="action-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <a href="product-detail.html" class="action-btn" title="Quick View">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="https://wa.me/919876543210?text=I am interested in the Om Suraj Painted Mandir"
-                            class="action-btn" title="WhatsApp" target="_blank">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <div class="product-cat">Gold Painted Mandirs</div>
-                    <h3 class="product-name">Om Suraj Gold-Painted Mandir</h3>
-                    <div class="product-price"
-                        style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; font-family: \'Cinzel\', serif;">
-                        Price: ₹ 1,50,000</div>
-                    <div class="product-meta">
-                        <div class="product-size"><i class="fas fa-ruler-combined"></i> 3.5 × 2.5 ft</div>
-
-                    </div>
-                    <div class="product-meta" style="margin-top: 10px;">
-                        <a href="product-detail.html" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Product 3 -->
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Peacock Arched Open Mandir" loading="lazy" />
-                    <div class="product-badge custom">Custom</div>
-                    <div class="product-actions">
-                        <button class="action-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <a href="product-detail.html" class="action-btn" title="Quick View">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="https://wa.me/919876543210?text=I am interested in the Peacock Arched Open Mandir"
-                            class="action-btn" title="WhatsApp" target="_blank">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <div class="product-cat">Open Style Mandirs</div>
-                    <h3 class="product-name">Peacock Arched Open Mandir</h3>
-                    <div class="product-price"
-                        style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; font-family: \'Cinzel\', serif;">
-                        Price: ₹ 1,50,000</div>
-                    <div class="product-meta">
-                        <div class="product-size"><i class="fas fa-ruler-combined"></i> 4.5 × 3 ft</div>
-
-                    </div>
-                    <div class="product-meta" style="margin-top: 10px;">
-                        <a href="product-detail.html" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Product 4 -->
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Om Surya Gold Compact Mandir" loading="lazy" />
-                    <div class="product-badge">Popular</div>
-                    <div class="product-actions">
-                        <button class="action-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <a href="product-detail.html" class="action-btn" title="Quick View">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="https://wa.me/919876543210?text=I am interested in the Om Surya Gold Compact Mandir"
-                            class="action-btn" title="WhatsApp" target="_blank">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <div class="product-cat">Compact Mandirs</div>
-                    <h3 class="product-name">Om Surya Compact Mandir</h3>
-                    <div class="product-price"
-                        style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; font-family: \'Cinzel\', serif;">
-                        Price: ₹ 1,50,000</div>
-                    <div class="product-meta">
-                        <div class="product-size"><i class="fas fa-ruler-combined"></i> 3 × 2 ft</div>
-
-                    </div>
-                    <div class="product-meta" style="margin-top: 10px;">
-                        <a href="product-detail.html" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Product 5 -->
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Om Surya Gold Compact Mandir" loading="lazy" />
-                    <div class="product-badge">Popular</div>
-                    <div class="product-actions">
-                        <button class="action-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <a href="product-detail.html" class="action-btn" title="Quick View">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="https://wa.me/919876543210?text=I am interested in the Om Surya Gold Compact Mandir"
-                            class="action-btn" title="WhatsApp" target="_blank">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <div class="product-cat">Compact Mandirs</div>
-                    <h3 class="product-name">Om Surya Compact Mandir</h3>
-                    <div class="product-price"
-                        style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; font-family: \'Cinzel\', serif;">
-                        Price: ₹ 1,50,000</div>
-                    <div class="product-meta">
-                        <div class="product-size"><i class="fas fa-ruler-combined"></i> 3 × 2 ft</div>
-
-                    </div>
-                    <div class="product-meta" style="margin-top: 10px;">
-                        <a href="product-detail.html" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
-                    </div>
-
-                </div>
-            </div>
+            @endforeach
 
         </div>
 
