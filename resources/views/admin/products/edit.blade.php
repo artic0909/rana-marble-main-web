@@ -93,10 +93,10 @@
                             <option value="0">No variants</option>
                             @for($i = 1; $i <= 20; $i++)
                                 <option value="{{ $i }}"
-                                    {{ $product->variants->count() === $i ? 'selected' : '' }}>
-                                    {{ $i }} variant{{ $i > 1 ? 's' : '' }}
+                                {{ $product->variants->count() === $i ? 'selected' : '' }}>
+                                {{ $i }} variant{{ $i > 1 ? 's' : '' }}
                                 </option>
-                            @endfor
+                                @endfor
                         </select>
                     </div>
 
@@ -140,10 +140,10 @@
                             class="form-select @error('category_id') is-invalid @enderror">
                             <option value="">Select Category</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}"
-                                    {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->name }}
-                                </option>
+                            <option value="{{ $cat->id }}"
+                                {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
                             @endforeach
                         </select>
                         @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -154,10 +154,10 @@
                         <select name="status"
                             class="form-select @error('status') is-invalid @enderror">
                             @foreach(['active' => 'Active', 'draft' => 'Draft', 'inactive' => 'Inactive'] as $val => $label)
-                                <option value="{{ $val }}"
-                                    {{ old('status', $product->status) === $val ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
+                            <option value="{{ $val }}"
+                                {{ old('status', $product->status) === $val ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
                             @endforeach
                         </select>
                         @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -205,26 +205,26 @@
                     {{-- Existing gallery items --}}
                     <div id="galleryGrid" class="d-flex flex-wrap gap-2 mb-2">
                         @foreach($product->images as $img)
-                            <div class="position-relative existing-gallery-tile"
-                                data-id="{{ $img->id }}"
-                                style="width:70px;height:70px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)">
+                        <div class="position-relative existing-gallery-tile"
+                            data-id="{{ $img->id }}"
+                            style="width:70px;height:70px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)">
 
-                                @if($img->type === 'video')
-                                    <video src="{{ Storage::url($img->image) }}"
-                                        style="width:100%;height:100%;object-fit:cover;display:block" muted></video>
-                                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3)">
-                                        <i class="bi bi-play-circle-fill" style="color:#fff;font-size:22px"></i>
-                                    </div>
-                                @else
-                                    <img src="{{ Storage::url($img->image) }}"
-                                        style="width:100%;height:100%;object-fit:cover;display:block">
-                                @endif
-
-                                <button type="button" class="existing-remove-btn"
-                                    style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1">
-                                    <i class="bi bi-x"></i>
-                                </button>
+                            @if($img->type === 'video')
+                            <video src="{{ Storage::url($img->image) }}"
+                                style="width:100%;height:100%;object-fit:cover;display:block" muted></video>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3)">
+                                <i class="bi bi-play-circle-fill" style="color:#fff;font-size:22px"></i>
                             </div>
+                            @else
+                            <img src="{{ Storage::url($img->image) }}"
+                                style="width:100%;height:100%;object-fit:cover;display:block">
+                            @endif
+
+                            <button type="button" class="existing-remove-btn"
+                                style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
                         @endforeach
                     </div>
 
@@ -249,33 +249,108 @@
 
         </div>
     </div>
+
+    {{-- ── SEO ── --}}
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="card-title-sm mb-0">SEO</h6>
+                <span style="font-size:11px;color:var(--text-muted)">Optional — improves search visibility</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Meta Title</label>
+                <input type="text" name="meta_title" id="seoMetaTitle"
+                    class="form-control @error('meta_title') is-invalid @enderror"
+                    value="{{ old('meta_title', $product->meta_title ?? '') }}"
+                    placeholder="e.g. Buy Red Marble Mandir Online — Rana Marble"
+                    maxlength="60">
+                @error('meta_title') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+                    Recommended: 50–60 characters.
+                    <span id="metaTitleCount" style="font-weight:600">0</span> / 60
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Meta Description</label>
+                <textarea name="meta_description" id="seoMetaDesc" rows="3"
+                    class="form-control @error('meta_description') is-invalid @enderror"
+                    placeholder="Brief description shown in Google search results…"
+                    maxlength="160">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+                @error('meta_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+                    Recommended: 150–160 characters.
+                    <span id="metaDescCount" style="font-weight:600">0</span> / 160
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Keywords</label>
+                <input type="text" name="meta_keywords"
+                    class="form-control"
+                    value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}"
+                    placeholder="marble, mandir, handcraft (comma separated)">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">OG Image URL
+                    <span style="font-size:11px;font-weight:400;color:var(--text-muted)">
+                        — shown when shared on WhatsApp, Facebook etc.
+                    </span>
+                </label>
+                <input type="text" name="og_image"
+                    class="form-control @error('og_image') is-invalid @enderror"
+                    value="{{ old('og_image', $product->og_image ?? '') }}"
+                    placeholder="https://ranamarble.info/img/product.jpg">
+                @error('og_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            </div>
+
+            {{-- Live SERP Preview --}}
+            <label class="form-label-custom">Search Result Preview</label>
+            <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;background:var(--surface)">
+                <div id="serpTitle"
+                    style="font-size:17px;color:#1a0dab;font-weight:400;margin-bottom:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
+                    {{ old('meta_title', $product->meta_title ?? 'Your product title') }}
+                </div>
+                <div style="font-size:12px;color:#006621;margin-bottom:4px">
+                    ranamarble.info/products/...
+                </div>
+                <div id="serpDesc"
+                    style="font-size:12px;color:#4d5156;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">
+                    {{ old('meta_description', $product->meta_description ?? 'Your meta description will appear here.') }}
+                </div>
+            </div>
+
+        </div>
+    </div>
 </form>
 
 
 <script>
-// ── DB data ───────────────────────────────────────────────────────────────────
-const SIZES  = @json($sizes->map(fn($s)  => ['id' => $s->id,  'name' => $s->name]));
-const COLORS = @json($colors->map(fn($c) => ['id' => $c->id,  'name' => $c->name, 'hex' => $c->hex]));
+    // ── DB data ───────────────────────────────────────────────────────────────────
+    const SIZES = @json($sizes -> map(fn($s) => ['id' => $s -> id, 'name' => $s -> name]));
+    const COLORS = @json($colors -> map(fn($c) => ['id' => $c -> id, 'name' => $c -> name, 'hex' => $c -> hex]));
 
-// Existing variants pre-filled from DB
-const EXISTING_VARIANTS = @json($existingVariants);
+    // Existing variants pre-filled from DB
+    const EXISTING_VARIANTS = @json($existingVariants);
 
-// ── Variant helpers ───────────────────────────────────────────────────────────
-function sizeOptions(selected = '') {
-    return `<option value="">Select Size</option>` +
-        SIZES.map(s => `<option value="${s.id}" ${s.id == selected ? 'selected' : ''}>${s.name}</option>`).join('');
-}
+    // ── Variant helpers ───────────────────────────────────────────────────────────
+    function sizeOptions(selected = '') {
+        return `<option value="">Select Size</option>` +
+            SIZES.map(s => `<option value="${s.id}" ${s.id == selected ? 'selected' : ''}>${s.name}</option>`).join('');
+    }
 
-function colorOptions(selected = '') {
-    return `<option value="">Select Color</option>` +
-        COLORS.map(c => `<option value="${c.id}" ${c.id == selected ? 'selected' : ''}>${c.name}</option>`).join('');
-}
+    function colorOptions(selected = '') {
+        return `<option value="">Select Color</option>` +
+            COLORS.map(c => `<option value="${c.id}" ${c.id == selected ? 'selected' : ''}>${c.name}</option>`).join('');
+    }
 
-function buildVariantRow(index, data = {}) {
-    const row = document.createElement('div');
-    row.className = 'variant-row d-grid align-items-center gap-2 mb-2';
-    row.style.cssText = 'grid-template-columns:1fr 1fr 120px 36px';
-    row.innerHTML = `
+    function buildVariantRow(index, data = {}) {
+        const row = document.createElement('div');
+        row.className = 'variant-row d-grid align-items-center gap-2 mb-2';
+        row.style.cssText = 'grid-template-columns:1fr 1fr 120px 36px';
+        row.innerHTML = `
         <select class="form-select form-select-sm" name="variants[${index}][size_id]">
             ${sizeOptions(data.size_id ?? '')}
         </select>
@@ -290,118 +365,121 @@ function buildVariantRow(index, data = {}) {
             style="background:#fee2e2;color:#dc2626;border-radius:7px;width:34px;height:34px;padding:0;border:none">
             <i class="bi bi-x" style="font-size:16px"></i>
         </button>`;
-    row.querySelector('.remove-variant-row').addEventListener('click', () => {
-        row.remove();
-        reindexVariants();
-    });
-    return row;
-}
-
-function reindexVariants() {
-    document.querySelectorAll('.variant-row').forEach((row, i) => {
-        row.querySelectorAll('[name]').forEach(el => {
-            el.name = el.name.replace(/variants\[\d+\]/, `variants[${i}]`);
+        row.querySelector('.remove-variant-row').addEventListener('click', () => {
+            row.remove();
+            reindexVariants();
         });
-    });
-}
-
-function renderVariants(count, prefill = []) {
-    const wrapper = document.getElementById('variantsWrapper');
-    const rows    = document.getElementById('variantRows');
-    rows.innerHTML = '';
-    if (count === 0) { wrapper.classList.add('d-none'); return; }
-    wrapper.classList.remove('d-none');
-    for (let i = 0; i < count; i++) {
-        rows.appendChild(buildVariantRow(i, prefill[i] ?? {}));
+        return row;
     }
-}
 
-// Pre-fill existing variants on page load
-renderVariants(EXISTING_VARIANTS.length, EXISTING_VARIANTS);
+    function reindexVariants() {
+        document.querySelectorAll('.variant-row').forEach((row, i) => {
+            row.querySelectorAll('[name]').forEach(el => {
+                el.name = el.name.replace(/variants\[\d+\]/, `variants[${i}]`);
+            });
+        });
+    }
 
-document.getElementById('variantCountSelect').addEventListener('change', function () {
-    renderVariants(parseInt(this.value));
-});
-
-document.getElementById('addVariantRowBtn').addEventListener('click', function () {
-    const rows = document.getElementById('variantRows');
-    rows.appendChild(buildVariantRow(rows.children.length));
-    reindexVariants();
-});
-
-
-// ── Main Image ────────────────────────────────────────────────────────────────
-const mainImageInput   = document.getElementById('mainImageInput');
-const mainImagePreview = document.getElementById('mainImagePreview');
-const mainImageImg     = document.getElementById('mainImageImg');
-const mainImageZone    = document.getElementById('mainImageZone');
-const removeFlag       = document.getElementById('removeMainImageFlag');
-
-mainImageInput.addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
-    mainImageImg.src = URL.createObjectURL(file);
-    mainImagePreview.classList.remove('d-none');
-    mainImageZone.classList.add('d-none');
-    removeFlag.value = '0';
-});
-
-document.getElementById('removeMainImage').addEventListener('click', function () {
-    mainImageInput.value = '';
-    mainImageImg.src     = '';
-    mainImagePreview.classList.add('d-none');
-    mainImageZone.classList.remove('d-none');
-    removeFlag.value = '1'; // tell controller to delete existing
-});
-
-
-// ── Existing gallery — delete on X click ─────────────────────────────────────
-document.querySelectorAll('.existing-remove-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const tile = this.closest('.existing-gallery-tile');
-        const id   = tile.dataset.id;
-
-        // Add hidden input so controller knows to delete this image
-        const hidden = document.createElement('input');
-        hidden.type  = 'hidden';
-        hidden.name  = 'delete_images[]';
-        hidden.value = id;
-        document.getElementById('deleteImagesContainer').appendChild(hidden);
-
-        tile.remove();
-    });
-});
-
-
-// ── New gallery uploads ───────────────────────────────────────────────────────
-const galleryInput           = document.getElementById('galleryInput');
-const galleryGrid            = document.getElementById('galleryGrid');
-const galleryInputsContainer = document.getElementById('galleryInputsContainer');
-let galleryFiles             = [];
-
-galleryInput.addEventListener('change', function () {
-    Array.from(this.files).forEach(file => {
-        const isVideo = file.type.startsWith('video/');
-
-        const existingVideos = [...document.querySelectorAll('.existing-gallery-tile')]
-            .filter(t => t.querySelector('video'));
-        const newVideos = galleryFiles.filter(f => f && f.type.startsWith('video/'));
-
-        if (isVideo && (existingVideos.length + newVideos.length) >= 1) {
-            showToast('error', 'Only one video is allowed in the gallery.');
+    function renderVariants(count, prefill = []) {
+        const wrapper = document.getElementById('variantsWrapper');
+        const rows = document.getElementById('variantRows');
+        rows.innerHTML = '';
+        if (count === 0) {
+            wrapper.classList.add('d-none');
             return;
         }
+        wrapper.classList.remove('d-none');
+        for (let i = 0; i < count; i++) {
+            rows.appendChild(buildVariantRow(i, prefill[i] ?? {}));
+        }
+    }
 
-        const index = galleryFiles.length;
-        galleryFiles.push(file);
+    // Pre-fill existing variants on page load
+    renderVariants(EXISTING_VARIANTS.length, EXISTING_VARIANTS);
 
-        const wrap = document.createElement('div');
-        wrap.className = 'position-relative gallery-tile';
-        wrap.dataset.index = index;
-        wrap.style.cssText = 'width:70px;height:70px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)';
+    document.getElementById('variantCountSelect').addEventListener('change', function() {
+        renderVariants(parseInt(this.value));
+    });
 
-        if (isVideo) {
-            wrap.innerHTML = `
+    document.getElementById('addVariantRowBtn').addEventListener('click', function() {
+        const rows = document.getElementById('variantRows');
+        rows.appendChild(buildVariantRow(rows.children.length));
+        reindexVariants();
+    });
+
+
+    // ── Main Image ────────────────────────────────────────────────────────────────
+    const mainImageInput = document.getElementById('mainImageInput');
+    const mainImagePreview = document.getElementById('mainImagePreview');
+    const mainImageImg = document.getElementById('mainImageImg');
+    const mainImageZone = document.getElementById('mainImageZone');
+    const removeFlag = document.getElementById('removeMainImageFlag');
+
+    mainImageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        mainImageImg.src = URL.createObjectURL(file);
+        mainImagePreview.classList.remove('d-none');
+        mainImageZone.classList.add('d-none');
+        removeFlag.value = '0';
+    });
+
+    document.getElementById('removeMainImage').addEventListener('click', function() {
+        mainImageInput.value = '';
+        mainImageImg.src = '';
+        mainImagePreview.classList.add('d-none');
+        mainImageZone.classList.remove('d-none');
+        removeFlag.value = '1'; // tell controller to delete existing
+    });
+
+
+    // ── Existing gallery — delete on X click ─────────────────────────────────────
+    document.querySelectorAll('.existing-remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tile = this.closest('.existing-gallery-tile');
+            const id = tile.dataset.id;
+
+            // Add hidden input so controller knows to delete this image
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'delete_images[]';
+            hidden.value = id;
+            document.getElementById('deleteImagesContainer').appendChild(hidden);
+
+            tile.remove();
+        });
+    });
+
+
+    // ── New gallery uploads ───────────────────────────────────────────────────────
+    const galleryInput = document.getElementById('galleryInput');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const galleryInputsContainer = document.getElementById('galleryInputsContainer');
+    let galleryFiles = [];
+
+    galleryInput.addEventListener('change', function() {
+        Array.from(this.files).forEach(file => {
+            const isVideo = file.type.startsWith('video/');
+
+            const existingVideos = [...document.querySelectorAll('.existing-gallery-tile')]
+                .filter(t => t.querySelector('video'));
+            const newVideos = galleryFiles.filter(f => f && f.type.startsWith('video/'));
+
+            if (isVideo && (existingVideos.length + newVideos.length) >= 1) {
+                showToast('error', 'Only one video is allowed in the gallery.');
+                return;
+            }
+
+            const index = galleryFiles.length;
+            galleryFiles.push(file);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'position-relative gallery-tile';
+            wrap.dataset.index = index;
+            wrap.style.cssText = 'width:70px;height:70px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)';
+
+            if (isVideo) {
+                wrap.innerHTML = `
                 <video src="${URL.createObjectURL(file)}"
                     style="width:100%;height:100%;object-fit:cover;display:block" muted></video>
                 <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3)">
@@ -411,48 +489,72 @@ galleryInput.addEventListener('change', function () {
                     style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1">
                     <i class="bi bi-x"></i>
                 </button>`;
-        } else {
-            wrap.innerHTML = `
+            } else {
+                wrap.innerHTML = `
                 <img src="${URL.createObjectURL(file)}"
                     style="width:100%;height:100%;object-fit:cover;display:block">
                 <button type="button" class="gallery-remove-btn"
                     style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1">
                     <i class="bi bi-x"></i>
                 </button>`;
-        }
+            }
 
-        wrap.querySelector('.gallery-remove-btn').addEventListener('click', () => {
-            galleryFiles[index] = null;
-            wrap.remove();
+            wrap.querySelector('.gallery-remove-btn').addEventListener('click', () => {
+                galleryFiles[index] = null;
+                wrap.remove();
+                rebuildGalleryInputs();
+            });
+
+            galleryGrid.appendChild(wrap);
             rebuildGalleryInputs();
         });
-
-        galleryGrid.appendChild(wrap);
-        rebuildGalleryInputs();
+        this.value = '';
     });
-    this.value = '';
-});
 
-function rebuildGalleryInputs() {
-    galleryInputsContainer.innerHTML = '';
-    const dt = new DataTransfer();
-    galleryFiles.filter(Boolean).forEach(file => dt.items.add(file));
-    const input    = document.createElement('input');
-    input.type     = 'file';
-    input.name     = 'gallery[]';
-    input.multiple = true;
-    input.classList.add('d-none');
-    input.files    = dt.files;
-    galleryInputsContainer.appendChild(input);
-}
+    function rebuildGalleryInputs() {
+        galleryInputsContainer.innerHTML = '';
+        const dt = new DataTransfer();
+        galleryFiles.filter(Boolean).forEach(file => dt.items.add(file));
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'gallery[]';
+        input.multiple = true;
+        input.classList.add('d-none');
+        input.files = dt.files;
+        galleryInputsContainer.appendChild(input);
+    }
 
 
-// ── Draft / Publish ───────────────────────────────────────────────────────────
-document.querySelectorAll('[name="status_action"]').forEach(btn => {
-    btn.addEventListener('click', function () {
-        document.querySelector('[name="status"]').value = this.value;
+    // ── SEO counters + live SERP preview ─────────────────────────────────────────
+    const seoTitleInput = document.getElementById('seoMetaTitle');
+    const seoDescInput = document.getElementById('seoMetaDesc');
+
+    function updateSeoCounters() {
+        if (seoTitleInput) {
+            const len = seoTitleInput.value.length;
+            document.getElementById('metaTitleCount').textContent = len;
+            document.getElementById('metaTitleCount').style.color = len > 60 ? '#dc2626' : len >= 50 ? '#16a34a' : 'inherit';
+            document.getElementById('serpTitle').textContent = seoTitleInput.value || 'Your product title';
+        }
+        if (seoDescInput) {
+            const len = seoDescInput.value.length;
+            document.getElementById('metaDescCount').textContent = len;
+            document.getElementById('metaDescCount').style.color = len > 160 ? '#dc2626' : len >= 150 ? '#16a34a' : 'inherit';
+            document.getElementById('serpDesc').textContent = seoDescInput.value || 'Your meta description will appear here.';
+        }
+    }
+
+    seoTitleInput?.addEventListener('input', updateSeoCounters);
+    seoDescInput?.addEventListener('input', updateSeoCounters);
+    updateSeoCounters(); // run on load to populate counts for edit page
+
+
+    // ── Draft / Publish ───────────────────────────────────────────────────────────
+    document.querySelectorAll('[name="status_action"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelector('[name="status"]').value = this.value;
+        });
     });
-});
 </script>
 
 @endsection

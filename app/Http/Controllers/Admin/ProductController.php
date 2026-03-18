@@ -90,6 +90,12 @@ class ProductController extends Controller
             'variants.*.size_id'  => 'nullable|exists:sizes,id',
             'variants.*.color_id' => 'nullable|exists:colors,id',
             'variants.*.price'    => 'required_with:variants|numeric|min:0',
+
+            // SEO
+            'meta_title'       => $validated['meta_title']       ?? null,
+            'meta_description' => $validated['meta_description'] ?? null,
+            'meta_keywords'    => $validated['meta_keywords']    ?? null,
+            'og_image'         => $validated['og_image']         ?? null,
         ]);
 
         try {
@@ -109,6 +115,11 @@ class ProductController extends Controller
                 'category_id' => $validated['category_id'],
                 'status'      => $validated['status'],
                 'main_image'  => $mainImagePath,
+
+                'meta_title'       => $validated['meta_title']       ?? null,
+                'meta_description' => $validated['meta_description'] ?? null,
+                'meta_keywords'    => $validated['meta_keywords']    ?? null,
+                'og_image'         => $validated['og_image']         ?? null,
             ]);
 
             // Gallery images + video
@@ -197,6 +208,12 @@ class ProductController extends Controller
             'variants.*.size_id'  => 'nullable|exists:sizes,id',
             'variants.*.color_id' => 'nullable|exists:colors,id',
             'variants.*.price'    => 'required_with:variants|numeric|min:0',
+
+            // SEO
+            'meta_title'       => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords'    => 'nullable|string|max:500',
+            'og_image'         => 'nullable|string|max:500',
         ]);
 
         try {

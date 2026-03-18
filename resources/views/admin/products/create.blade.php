@@ -209,6 +209,82 @@
 
         </div>
     </div>
+
+
+    {{-- ── SEO ── --}}
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="card-title-sm mb-0">SEO</h6>
+                <span style="font-size:11px;color:var(--text-muted)">Optional — improves search visibility</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Meta Title</label>
+                <input type="text" name="meta_title" id="seoMetaTitle"
+                    class="form-control @error('meta_title') is-invalid @enderror"
+                    value="{{ old('meta_title', $product->meta_title ?? '') }}"
+                    placeholder="e.g. Buy Red Marble Mandir Online — Rana Marble"
+                    maxlength="60">
+                @error('meta_title') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+                    Recommended: 50–60 characters.
+                    <span id="metaTitleCount" style="font-weight:600">0</span> / 60
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Meta Description</label>
+                <textarea name="meta_description" id="seoMetaDesc" rows="3"
+                    class="form-control @error('meta_description') is-invalid @enderror"
+                    placeholder="Brief description shown in Google search results…"
+                    maxlength="160">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+                @error('meta_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+                    Recommended: 150–160 characters.
+                    <span id="metaDescCount" style="font-weight:600">0</span> / 160
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Keywords</label>
+                <input type="text" name="meta_keywords"
+                    class="form-control"
+                    value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}"
+                    placeholder="marble, mandir, handcraft (comma separated)">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">OG Image URL
+                    <span style="font-size:11px;font-weight:400;color:var(--text-muted)">
+                        — shown when shared on WhatsApp, Facebook etc.
+                    </span>
+                </label>
+                <input type="text" name="og_image"
+                    class="form-control @error('og_image') is-invalid @enderror"
+                    value="{{ old('og_image', $product->og_image ?? '') }}"
+                    placeholder="https://ranamarble.info/img/product.jpg">
+                @error('og_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            </div>
+
+            {{-- Live SERP Preview --}}
+            <label class="form-label-custom">Search Result Preview</label>
+            <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;background:var(--surface)">
+                <div id="serpTitle"
+                    style="font-size:17px;color:#1a0dab;font-weight:400;margin-bottom:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
+                    {{ old('meta_title', $product->meta_title ?? 'Your product title') }}
+                </div>
+                <div style="font-size:12px;color:#006621;margin-bottom:4px">
+                    ranamarble.info/products/...
+                </div>
+                <div id="serpDesc"
+                    style="font-size:12px;color:#4d5156;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">
+                    {{ old('meta_description', $product->meta_description ?? 'Your meta description will appear here.') }}
+                </div>
+            </div>
+
+        </div>
+    </div>
 </form>
 
 
@@ -380,6 +456,30 @@
         input.files = dt.files;
         galleryInputsContainer.appendChild(input);
     }
+
+
+    // ── SEO counters + live SERP preview ─────────────────────────────────────────
+    const seoTitleInput = document.getElementById('seoMetaTitle');
+    const seoDescInput = document.getElementById('seoMetaDesc');
+
+    function updateSeoCounters() {
+        if (seoTitleInput) {
+            const len = seoTitleInput.value.length;
+            document.getElementById('metaTitleCount').textContent = len;
+            document.getElementById('metaTitleCount').style.color = len > 60 ? '#dc2626' : len >= 50 ? '#16a34a' : 'inherit';
+            document.getElementById('serpTitle').textContent = seoTitleInput.value || 'Your product title';
+        }
+        if (seoDescInput) {
+            const len = seoDescInput.value.length;
+            document.getElementById('metaDescCount').textContent = len;
+            document.getElementById('metaDescCount').style.color = len > 160 ? '#dc2626' : len >= 150 ? '#16a34a' : 'inherit';
+            document.getElementById('serpDesc').textContent = seoDescInput.value || 'Your meta description will appear here.';
+        }
+    }
+
+    seoTitleInput?.addEventListener('input', updateSeoCounters);
+    seoDescInput?.addEventListener('input', updateSeoCounters);
+    updateSeoCounters(); // run on load to populate counts for edit page
 
 
     // ── Draft / Publish buttons set the status field ─────────────────────────────

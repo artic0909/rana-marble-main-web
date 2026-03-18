@@ -10,6 +10,21 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
         rel="stylesheet">
+
+        <!-- Ico favicon -->
+    <link rel="icon" type="image/x-icon" href="{{asset('./img/favicon.ico')}}">
+
+    <!-- {{-- Per-page SEO (set from any view using @section) --}} -->
+<meta name="description" content="@yield('meta_description', \App\Models\Setting::get('meta_description', ''))">
+<meta name="keywords"    content="@yield('meta_keywords',    \App\Models\Setting::get('meta_keywords', ''))">
+<meta property="og:title"       content="@yield('og_title', \App\Models\Setting::get('meta_title', ''))">
+<meta property="og:description" content="@yield('meta_description', \App\Models\Setting::get('meta_description', ''))">
+<meta property="og:image"       content="@yield('og_image', \App\Models\Setting::get('og_image', ''))">
+<meta name="robots" content="{{ \App\Models\Setting::get('robots', 'index,follow') }}">
+@if(\App\Models\Setting::get('google_verification'))
+    <meta name="google-site-verification" content="{{ \App\Models\Setting::get('google_verification') }}">
+@endif
+    
     <style>
         :root {
             --primary: #FF6B2B;

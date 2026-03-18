@@ -9,6 +9,7 @@ class Product extends Model
     protected $fillable = [
         'name', 'description', 'tags', 'sku',
         'stock', 'category_id', 'status', 'main_image',
+        'meta_title', 'meta_description', 'meta_keywords', 'og_image',
     ];
 
     public function category()

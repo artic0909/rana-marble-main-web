@@ -1,5 +1,11 @@
 @extends('admin.layout.app')
 
+
+@section('title',            $product->meta_title       ?: $product->name . ' — Rana Marble')
+@section('meta_description', $product->meta_description ?: \App\Models\Setting::get('meta_description'))
+@section('meta_keywords',    $product->meta_keywords    ?: \App\Models\Setting::get('meta_keywords'))
+@section('og_image',         $product->og_image         ?: ($product->main_image ? Storage::url($product->main_image) : \App\Models\Setting::get('og_image')))
+
 @section('title', 'Product — ' . $product->name)
 
 @section('content')
