@@ -45,10 +45,14 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::get('/products/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::get('/products/show', [ProductController::class, 'show'])->name('products.show');
+    // Products
+    Route::get('/products',               [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create',        [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products',              [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{id}',          [ProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{id}/edit',     [ProductController::class, 'edit'])->name('products.edit');
+    Route::post('/products/{id}/update',  [ProductController::class, 'update'])->name('products.update');
+    Route::post('/products/{id}/delete',  [ProductController::class, 'delete'])->name('products.delete');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/show', [OrderController::class, 'show'])->name('orders.show');
@@ -63,8 +67,12 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::get('/customers/show', [CustomerController::class, 'show'])->name('customers.show');
 
-    Route::get('/banners', [BannerController::class, 'index'])->name('banners.index');
-    Route::get('/banners/edit', [BannerController::class, 'show'])->name('banners.edit');
+    // Banners
+    Route::get('/banners',              [BannerController::class, 'index'])->name('banners.index');
+    Route::post('/banners',             [BannerController::class, 'store'])->name('banners.store');
+    Route::get('/banners/{id}/edit',    [BannerController::class, 'edit'])->name('banners.edit');
+    Route::post('/banners/{id}/update', [BannerController::class, 'update'])->name('banners.update');
+    Route::post('/banners/{id}/delete', [BannerController::class, 'delete'])->name('banners.delete');
 
     Route::get('/support', [SupportController::class, 'index'])->name('support');
 
