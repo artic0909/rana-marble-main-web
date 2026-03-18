@@ -32,13 +32,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($categories as $category)
                         <tr>
                             <td style="padding-left:16px">
                                 <div class="d-flex align-items-center gap-2">
-                                    <span style="font-size:22px">📱</span>
+                                    <span style="font-size:22px">🛕</span>
                                     <div>
-                                        <div style="font-weight:600;font-size:13px">Electronics</div>
-                                        <div style="font-size:11px;color:var(--text-muted)">Top Level</div>
+                                        <div style="font-weight:600;font-size:13px">{{ $category->name }}</div>
+                                        <div style="font-size:11px;color:var(--text-muted)">{{ $category->slug }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -46,127 +47,30 @@
                             <td><span class="badge-status badge-active">Active</span></td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <button class="btn btn-sm" style="background:var(--surface2);border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#addCategoryModal"
-                                        data-name="Electronics" data-parent="None (Top Level)" data-desc="" data-slug="electronics">
-                                        <i class="bi bi-pencil" style="font-size:12px"></i>
+                                    <!-- {{-- Edit button --}} -->
+                                    <button
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addCategoryModal"
+                                        data-id="{{ $category->id }}"
+                                        data-name="{{ $category->name }}"
+                                        class="btn btn-sm btn-outline-custom">
+                                        <i class="bi bi-pencil"></i>
                                     </button>
-                                    <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
-                                        data-category="Electronics">
-                                        <i class="bi bi-trash" style="font-size:12px"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:16px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span style="font-size:22px">👗</span>
-                                    <div>
-                                        <div style="font-weight:600;font-size:13px">Fashion</div>
-                                        <div style="font-size:11px;color:var(--text-muted)">Top Level</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>62</td>
-                            <td><span class="badge-status badge-active">Active</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-sm" style="background:var(--surface2);border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#addCategoryModal"
-                                        data-name="Fashion" data-parent="None (Top Level)" data-desc="" data-slug="fashion">
-                                        <i class="bi bi-pencil" style="font-size:12px"></i>
-                                    </button>
-                                    <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
-                                        data-category="Fashion">
-                                        <i class="bi bi-trash" style="font-size:12px"></i>
+
+                                    <!-- {{-- Delete button --}} -->
+                                    <button
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteCategoryModal"
+                                        data-id="{{ $category->id }}"
+                                        data-category="{{ $category->name }}"
+                                        class="btn btn-sm"
+                                        style="background:#fee2e2;color:#dc2626;border-radius:8px;">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td style="padding-left:16px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span style="font-size:22px">🏠</span>
-                                    <div>
-                                        <div style="font-weight:600;font-size:13px">Home & Garden</div>
-                                        <div style="font-size:11px;color:var(--text-muted)">Top Level</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>48</td>
-                            <td><span class="badge-status badge-active">Active</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-sm" style="background:var(--surface2);border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#addCategoryModal"
-                                        data-name="Home & Garden" data-parent="Home &amp; Garden" data-desc="" data-slug="home-garden">
-                                        <i class="bi bi-pencil" style="font-size:12px"></i>
-                                    </button>
-                                    <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
-                                        data-category="Home & Garden">
-                                        <i class="bi bi-trash" style="font-size:12px"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:16px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span style="font-size:22px">⚽</span>
-                                    <div>
-                                        <div style="font-weight:600;font-size:13px">Sports</div>
-                                        <div style="font-size:11px;color:var(--text-muted)">Top Level</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>31</td>
-                            <td><span class="badge-status badge-active">Active</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-sm" style="background:var(--surface2);border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#addCategoryModal"
-                                        data-name="Sports" data-parent="None (Top Level)" data-desc="" data-slug="sports">
-                                        <i class="bi bi-pencil" style="font-size:12px"></i>
-                                    </button>
-                                    <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
-                                        data-category="Sports">
-                                        <i class="bi bi-trash" style="font-size:12px"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:16px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span style="font-size:22px">📚</span>
-                                    <div>
-                                        <div style="font-weight:600;font-size:13px">Books</div>
-                                        <div style="font-size:11px;color:var(--text-muted)">Top Level</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>23</td>
-                            <td><span class="badge-status badge-draft">Draft</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-sm" style="background:var(--surface2);border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#addCategoryModal"
-                                        data-name="Books" data-parent="None (Top Level)" data-desc="" data-slug="books">
-                                        <i class="bi bi-pencil" style="font-size:12px"></i>
-                                    </button>
-                                    <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
-                                        data-category="Books">
-                                        <i class="bi bi-trash" style="font-size:12px"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -178,39 +82,33 @@
 <!-- ═══════════════════════════════════════════
      ADD / EDIT CATEGORY MODAL
 ════════════════════════════════════════════ -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <form action="{{ route('admin.categories.store') }}" method="POST" class="modal-content" id="category-form">
+            @csrf
 
             <div class="modal-header">
                 <h6 class="modal-title fw-semibold" id="addCategoryModalLabel">Add Category</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label-custom">Category Name</label>
-                    <input type="text" id="modal-cat-name" class="form-control" placeholder="e.g. Electronics">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label-custom">Category Image</label>
-                    <div class="upload-zone">
-                        <i class="bi bi-cloud-upload" style="font-size:28px;color:var(--text-muted)"></i>
-                        <p style="font-size:13px;color:var(--text-muted);margin:8px 0 0">Drag & drop or click to upload</p>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label-custom">Slug</label>
-                    <input type="text" id="modal-cat-slug" class="form-control" placeholder="electronics" readonly>
+                    <input type="text" name="name" id="modal-cat-name"
+                        class="form-control @error('name') is-invalid @enderror"
+                        value="{{ old('name') }}">
+                    @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="modal-footer gap-2">
                 <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary-custom">Save Category</button>
+                <button type="submit" class="btn btn-primary-custom">Save Category</button>
             </div>
-
-        </div>
+        </form>
     </div>
 </div>
 
@@ -218,9 +116,10 @@
 <!-- ═══════════════════════════════════════════
      DELETE CONFIRM MODAL
 ════════════════════════════════════════════ -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
+        <form method="POST" class="modal-content" id="delete-category-form">
+            @csrf
 
             <div class="modal-body text-center py-4">
                 <div style="width:52px;height:52px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
@@ -228,18 +127,19 @@
                 </div>
                 <h6 class="fw-semibold mb-1">Delete Category</h6>
                 <p style="font-size:13px;color:var(--text-muted);margin-bottom:0">
-                    Are you sure you want to delete <strong id="delete-category-name"></strong>? This action cannot be undone.
+                    Are you sure you want to delete <strong id="delete-category-name"></strong>?
+                    This action cannot be undone.
                 </p>
             </div>
 
             <div class="modal-footer justify-content-center gap-2 pt-0">
                 <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-sm" style="background:#dc2626;color:#fff;border-radius:8px;padding:6px 18px;">
+                <button type="submit" class="btn btn-sm"
+                    style="background:#dc2626;color:#fff;border-radius:8px;padding:6px 18px;">
                     Delete
                 </button>
             </div>
-
-        </div>
+        </form>
     </div>
 </div>
 
@@ -248,40 +148,44 @@
      MODAL LOGIC
 ════════════════════════════════════════════ -->
 <script>
-    // ── Add/Edit modal: populate fields when editing ──────────────────────────
     const categoryModal = document.getElementById('addCategoryModal');
+    const categoryForm = document.getElementById('category-form');
+    const storeUrl = "{{ route('admin.categories.store') }}";
 
+    // ── Add / Edit modal ──────────────────────────────────────────────────────
     categoryModal.addEventListener('show.bs.modal', function(e) {
         const btn = e.relatedTarget;
-        const name = btn?.dataset.name;
-        const isEdit = !!name;
+        const id = btn?.dataset.id ?? null;
+        const name = btn?.dataset.name ?? '';
+        const isEdit = !!id;
 
-        // Update modal title
         document.getElementById('addCategoryModalLabel').textContent = isEdit ? 'Edit Category' : 'Add Category';
+        document.getElementById('modal-cat-name').value = name;
 
-        // Populate or clear fields
-        document.getElementById('modal-cat-name').value = name ?? '';
-        document.getElementById('modal-cat-slug').value = btn?.dataset.slug ?? '';
-        document.getElementById('modal-cat-desc').value = btn?.dataset.desc ?? '';
-
-        const parentSelect = document.getElementById('modal-cat-parent');
-        const parentValue = btn?.dataset.parent ?? 'None (Top Level)';
-        [...parentSelect.options].forEach(o => o.selected = (o.text === parentValue));
+        // Switch form action between store and edit
+        categoryForm.action = isEdit ?
+            `/admin/categories/edit/${id}` :
+            storeUrl;
     });
 
-    // Reset title/fields when modal is hidden (so "Add" opens clean next time)
+    // Reset on close
     categoryModal.addEventListener('hidden.bs.modal', function() {
         document.getElementById('addCategoryModalLabel').textContent = 'Add Category';
         document.getElementById('modal-cat-name').value = '';
-        document.getElementById('modal-cat-slug').value = '';
-        document.getElementById('modal-cat-desc').value = '';
-        document.getElementById('modal-cat-parent').selectedIndex = 0;
+        categoryForm.action = storeUrl;
     });
 
-    // ── Delete modal: show category name ─────────────────────────────────────
-    document.getElementById('deleteCategoryModal').addEventListener('show.bs.modal', function(e) {
-        const category = e.relatedTarget?.dataset.category ?? '';
-        document.getElementById('delete-category-name').textContent = `"${category}"`;
+    // ── Delete modal ──────────────────────────────────────────────────────────
+    const deleteModal = document.getElementById('deleteCategoryModal');
+    const deleteForm = document.getElementById('delete-category-form');
+
+    deleteModal.addEventListener('show.bs.modal', function(e) {
+        const btn = e.relatedTarget;
+        const id = btn?.dataset.id ?? '';
+        const name = btn?.dataset.category ?? '';
+
+        document.getElementById('delete-category-name').textContent = `"${name}"`;
+        deleteForm.action = `/admin/categories/delete/${id}`;
     });
 </script>
 @endsection

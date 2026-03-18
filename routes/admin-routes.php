@@ -25,11 +25,23 @@ Route::post('admin/login', [AuthController::class, 'login'])->name('admin.login.
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Category
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::post('/categories/edit/{id}', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::post('/categories/delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
 
+    // Size
     Route::get('/sizes', [SizeController::class, 'index'])->name('sizes');
+    Route::post('/sizes', [SizeController::class, 'store'])->name('sizes.store');
+    Route::post('/sizes/edit/{id}', [SizeController::class, 'edit'])->name('sizes.edit');
+    Route::post('/sizes/delete/{id}', [SizeController::class, 'delete'])->name('sizes.delete');
 
+    // Color
     Route::get('/colors', [ColorController::class, 'index'])->name('colors');
+    Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
+    Route::post('/colors/edit/{id}', [ColorController::class, 'edit'])->name('colors.edit');
+    Route::post('/colors/delete/{id}', [ColorController::class, 'delete'])->name('colors.delete');
 
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 
@@ -37,10 +49,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::get('/products/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::get('/products/show', [ProductController::class, 'show'])->name('products.show');
-    
+
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/show', [OrderController::class, 'show'])->name('orders.show');
-    
+
     Route::get('/returns', [ReturnController::class, 'index'])->name('returns.index');
     Route::get('/returns/show', [ReturnController::class, 'show'])->name('returns.show');
 
@@ -61,5 +73,4 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 });

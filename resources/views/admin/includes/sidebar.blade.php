@@ -37,14 +37,14 @@
                   <a href="{{ route('admin.orders.index') }}" class="nav-link-item {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"><i class="bi bi-receipt"></i><span
                                   class="nav-text">Orders <span class="badge-count">14</span></span></a>
 
-                  <a href="{{ route('admin.returns.index') }}" class="nav-link-item {{ request()->routeIs('admin.returns.*') ? 'active' : '' }}"><i class="bi bi-arrow-return-left"></i><span
+                  <!-- <a href="{{ route('admin.returns.index') }}" class="nav-link-item {{ request()->routeIs('admin.returns.*') ? 'active' : '' }}"><i class="bi bi-arrow-return-left"></i><span
                                   class="nav-text">Returns <span class="badge-count">3</span></span></a>
 
                   <a href="{{ route('admin.shippings') }}" class="nav-link-item {{ request()->routeIs('admin.shippings') ? 'active' : '' }}"><i class="bi bi-truck"></i><span
                                   class="nav-text">Shipping</span></a>
                                   
                   <a href="{{ route('admin.payments') }}" class="nav-link-item {{ request()->routeIs('admin.payments') ? 'active' : '' }}"><i class="bi bi-credit-card"></i><span
-                                  class="nav-text">Payments</span></a>
+                                  class="nav-text">Payments</span></a> -->
 
                   <div class="nav-section-label">People</div>
 
@@ -76,8 +76,8 @@
                   <a href="{{ route('admin.support') }}" class="nav-link-item {{ request()->routeIs('admin.support') ? 'active' : '' }}"><i class="bi bi-headset"></i><span
                                   class="nav-text">Support <span class="badge-count">7</span></span></a>
 
-                  <a href="{{ route('admin.reports') }}" class="nav-link-item {{ request()->routeIs('admin.reports') ? 'active' : '' }}"><i class="bi bi-file-bar-graph"></i><span
-                                  class="nav-text">Reports</span></a>
+                  <!-- <a href="{{ route('admin.reports') }}" class="nav-link-item {{ request()->routeIs('admin.reports') ? 'active' : '' }}"><i class="bi bi-file-bar-graph"></i><span
+                                  class="nav-text">Reports</span></a> -->
 
                   <a href="{{ route('admin.settings.index') }}" class="nav-link-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><i class="bi bi-gear"></i><span
                                   class="nav-text">Settings</span></a>

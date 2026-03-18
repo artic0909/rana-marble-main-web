@@ -32,12 +32,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($sizes as $size)
                         <tr>
                             <td style="padding-left:16px">
                                 <div class="d-flex align-items-center gap-2">
                                     <span style="font-size:22px">📱</span>
                                     <div>
-                                        <div style="font-weight:600;font-size:13px">12"X14"</div>
+                                        <div style="font-weight:600;font-size:13px">{{ $size->name }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -45,19 +46,30 @@
                             <td><span class="badge-status badge-active">Active</span></td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <button class="btn btn-sm" style="background:var(--surface2);border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#addSizeModal"
-                                        data-name="Electronics" data-parent="None (Top Level)" data-desc="" data-slug="electronics">
-                                        <i class="bi bi-pencil" style="font-size:12px"></i>
+                                    <!-- {{-- Edit --}} -->
+                                    <button
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addSizeModal"
+                                        data-id="{{ $size->id }}"
+                                        data-name="{{ $size->name }}"
+                                        class="btn btn-sm btn-outline-custom">
+                                        <i class="bi bi-pencil"></i>
                                     </button>
-                                    <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;padding:4px 8px;"
-                                        data-bs-toggle="modal" data-bs-target="#deleteSizeModal"
-                                        data-Size="Electronics">
-                                        <i class="bi bi-trash" style="font-size:12px"></i>
+
+                                    <!-- {{-- Delete --}} -->
+                                    <button
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteSizeModal"
+                                        data-id="{{ $size->id }}"
+                                        data-name="{{ $size->name }}"
+                                        class="btn btn-sm"
+                                        style="background:#fee2e2;color:#dc2626;border-radius:8px;">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -67,37 +79,36 @@
 
 
 <!-- ═══════════════════════════════════════════
-     ADD / EDIT Size MODAL
+     ADD / EDIT SIZE MODAL
 ════════════════════════════════════════════ -->
-<div class="modal fade" id="addSizeModal" tabindex="-1" aria-labelledby="addSizeModalLabel" aria-hidden="true">
+<div class="modal fade" id="addSizeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <form method="POST" class="modal-content" id="size-form">
+            @csrf
 
             <div class="modal-header">
                 <h6 class="modal-title fw-semibold" id="addSizeModalLabel">Add Size</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label-custom">Size Name</label>
-                    <input type="text" id="modal-cat-name" class="form-control" placeholder="e.g. Electronics">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label-custom">Size Image</label>
-                    <div class="upload-zone">
-                        <i class="bi bi-cloud-upload" style="font-size:28px;color:var(--text-muted)"></i>
-                        <p style="font-size:13px;color:var(--text-muted);margin:8px 0 0">Drag & drop or click to upload</p>
-                    </div>
+                    <input type="text" name="name" id="modal-size-name"
+                        class="form-control @error('name') is-invalid @enderror"
+                        value="{{ old('name') }}"
+                        placeholder="e.g. Small">
+                    @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="modal-footer gap-2">
                 <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary-custom">Save Size</button>
+                <button type="submit" class="btn btn-primary-custom">Save Size</button>
             </div>
-
-        </div>
+        </form>
     </div>
 </div>
 
@@ -105,9 +116,10 @@
 <!-- ═══════════════════════════════════════════
      DELETE CONFIRM MODAL
 ════════════════════════════════════════════ -->
-<div class="modal fade" id="deleteSizeModal" tabindex="-1" aria-labelledby="deleteSizeModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteSizeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
+        <form method="POST" class="modal-content" id="delete-size-form">
+            @csrf
 
             <div class="modal-body text-center py-4">
                 <div style="width:52px;height:52px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
@@ -115,18 +127,19 @@
                 </div>
                 <h6 class="fw-semibold mb-1">Delete Size</h6>
                 <p style="font-size:13px;color:var(--text-muted);margin-bottom:0">
-                    Are you sure you want to delete <strong id="delete-Size-name"></strong>? This action cannot be undone.
+                    Are you sure you want to delete <strong id="delete-size-name"></strong>?
+                    This action cannot be undone.
                 </p>
             </div>
 
             <div class="modal-footer justify-content-center gap-2 pt-0">
                 <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-sm" style="background:#dc2626;color:#fff;border-radius:8px;padding:6px 18px;">
+                <button type="submit" class="btn btn-sm"
+                    style="background:#dc2626;color:#fff;border-radius:8px;padding:6px 18px;">
                     Delete
                 </button>
             </div>
-
-        </div>
+        </form>
     </div>
 </div>
 
@@ -135,40 +148,43 @@
      MODAL LOGIC
 ════════════════════════════════════════════ -->
 <script>
-    // ── Add/Edit modal: populate fields when editing ──────────────────────────
-    const SizeModal = document.getElementById('addSizeModal');
+    const sizeModal = document.getElementById('addSizeModal');
+    const sizeForm = document.getElementById('size-form');
+    const storeSizeUrl = "{{ route('admin.sizes.store') }}";
 
-    SizeModal.addEventListener('show.bs.modal', function(e) {
+    // ── Add / Edit modal ──────────────────────────────────────────────────────
+    sizeModal.addEventListener('show.bs.modal', function(e) {
         const btn = e.relatedTarget;
-        const name = btn?.dataset.name;
-        const isEdit = !!name;
+        const id = btn?.dataset.id ?? null;
+        const name = btn?.dataset.name ?? '';
+        const isEdit = !!id;
 
-        // Update modal title
         document.getElementById('addSizeModalLabel').textContent = isEdit ? 'Edit Size' : 'Add Size';
+        document.getElementById('modal-size-name').value = name;
 
-        // Populate or clear fields
-        document.getElementById('modal-cat-name').value = name ?? '';
-        document.getElementById('modal-cat-slug').value = btn?.dataset.slug ?? '';
-        document.getElementById('modal-cat-desc').value = btn?.dataset.desc ?? '';
-
-        const parentSelect = document.getElementById('modal-cat-parent');
-        const parentValue = btn?.dataset.parent ?? 'None (Top Level)';
-        [...parentSelect.options].forEach(o => o.selected = (o.text === parentValue));
+        sizeForm.action = isEdit ?
+            `/admin/sizes/edit/${id}` :
+            storeSizeUrl;
     });
 
-    // Reset title/fields when modal is hidden (so "Add" opens clean next time)
-    SizeModal.addEventListener('hidden.bs.modal', function() {
+    // Reset on close
+    sizeModal.addEventListener('hidden.bs.modal', function() {
         document.getElementById('addSizeModalLabel').textContent = 'Add Size';
-        document.getElementById('modal-cat-name').value = '';
-        document.getElementById('modal-cat-slug').value = '';
-        document.getElementById('modal-cat-desc').value = '';
-        document.getElementById('modal-cat-parent').selectedIndex = 0;
+        document.getElementById('modal-size-name').value = '';
+        sizeForm.action = storeSizeUrl;
     });
 
-    // ── Delete modal: show Size name ─────────────────────────────────────
-    document.getElementById('deleteSizeModal').addEventListener('show.bs.modal', function(e) {
-        const Size = e.relatedTarget?.dataset.Size ?? '';
-        document.getElementById('delete-Size-name').textContent = `"${Size}"`;
+    // ── Delete modal ──────────────────────────────────────────────────────────
+    const deleteSizeModal = document.getElementById('deleteSizeModal');
+    const deleteSizeForm = document.getElementById('delete-size-form');
+
+    deleteSizeModal.addEventListener('show.bs.modal', function(e) {
+        const btn = e.relatedTarget;
+        const id = btn?.dataset.id ?? '';
+        const name = btn?.dataset.name ?? '';
+
+        document.getElementById('delete-size-name').textContent = `"${name}"`;
+        deleteSizeForm.action = `/admin/sizes/delete/${id}`;
     });
 </script>
 @endsection

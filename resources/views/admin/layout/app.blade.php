@@ -1094,6 +1094,187 @@
             border-color: var(--primary);
             color: var(--primary);
         }
+
+
+
+
+        /* ── TOAST ALERTS ── */
+        #alert-stack {
+            position: fixed;
+            top: calc(var(--header-h) + 16px);
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            min-width: 320px;
+            max-width: 420px;
+        }
+
+        .alert-toast {
+            pointer-events: all;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow-lg);
+            border: 1.5px solid;
+            position: relative;
+            overflow: hidden;
+            animation: toastIn .35s cubic-bezier(.21, 1.02, .73, 1) both;
+        }
+
+        .alert-toast.hiding {
+            animation: toastOut .3s cubic-bezier(.4, 0, .2, 1) forwards;
+        }
+
+        .alert-toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            border-radius: var(--radius) 0 0 var(--radius);
+        }
+
+        .alert-toast.alert-success {
+            border-color: #bbf7d0;
+        }
+
+        .alert-toast.alert-success::before {
+            background: var(--success);
+        }
+
+        .alert-toast.alert-error {
+            border-color: #fecaca;
+        }
+
+        .alert-toast.alert-error::before {
+            background: var(--danger);
+        }
+
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .alert-success .toast-icon {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .alert-error .toast-icon {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .toast-body {
+            flex: 1;
+            min-width: 0;
+            padding-top: 1px;
+        }
+
+        .toast-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            margin: 0 0 2px;
+            font-family: 'Syne', sans-serif;
+        }
+
+        .alert-success .toast-title {
+            color: #15803d;
+        }
+
+        .alert-error .toast-title {
+            color: #b91c1c;
+        }
+
+        .toast-msg {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 20px;
+            padding: 0;
+            line-height: 1;
+            flex-shrink: 0;
+            transition: color .15s;
+        }
+
+        .toast-close:hover {
+            color: var(--text);
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            border-radius: 0 0 var(--radius) var(--radius);
+            animation: toastProgress 4s linear forwards;
+        }
+
+        .alert-success .toast-progress {
+            background: var(--success);
+        }
+
+        .alert-error .toast-progress {
+            background: var(--danger);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px) scale(.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateX(50px) scale(.93);
+            }
+        }
+
+        @keyframes toastProgress {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            #alert-stack {
+                right: 12px;
+                left: 12px;
+                min-width: unset;
+            }
+        }
     </style>
 </head>
 
@@ -1117,6 +1298,33 @@
 
     @include('admin.includes.mobile-nav')
 
+
+    {{-- ── TOAST ALERT STACK ── --}}
+    <div id="alert-stack"></div>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', () =>
+            showToast('success', @json(session('success')))
+        );
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', () =>
+            showToast('error', @json(session('error')))
+        );
+    </script>
+    @endif
+
+    @if($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', () =>
+            showToast('error', @json($errors -> first()))
+        );
+    </script>
+    @endif
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -1214,6 +1422,39 @@
         document.querySelectorAll('.settings-nav .nav-link').forEach(l => {
             l.addEventListener('click', e => e.preventDefault());
         });
+    </script>
+
+    <script>
+        // ── TOAST ALERTS ──
+        function showToast(type, msg) {
+            const labels = {
+                success: 'Success',
+                error: 'Error'
+            };
+            const icons = {
+                success: '<i class="bi bi-check-lg"></i>',
+                error: '<i class="bi bi-x-lg"></i>'
+            };
+            const el = document.createElement('div');
+            el.className = `alert-toast alert-${type}`;
+            el.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-body">
+            <p class="toast-title">${labels[type]}</p>
+            <p class="toast-msg">${msg}</p>
+        </div>
+        <button class="toast-close" onclick="dismissToast(this.closest('.alert-toast'))">×</button>
+        <div class="toast-progress"></div>
+    `;
+            document.getElementById('alert-stack').appendChild(el);
+            setTimeout(() => dismissToast(el), 4200);
+        }
+
+        function dismissToast(el) {
+            if (!el || el.classList.contains('hiding')) return;
+            el.classList.add('hiding');
+            setTimeout(() => el.remove(), 300);
+        }
     </script>
 </body>
 
