@@ -52,6 +52,48 @@ class ProductController extends Controller
         return view('products', compact('categories', 'heroBanners', 'seo', 'products', 'priceMin', 'priceMax', 'colors'));
     }
 
+
+    public function categoryWiseAllProducts($slug)
+    {
+        $heroBanners = Banner::where('placement', 'all_products')
+            ->where('status', 'active')
+            ->orderBy('sort_order')
+            ->get();
+
+        $categories = Category::orderBy('name')->get();
+        $colors = Color::get();
+
+        $seo = Setting::getMany([
+            'store_name',
+            'store_email',
+            'store_phone',
+            'store_address',
+            'meta_title',
+            'meta_description',
+            'meta_keywords',
+            'og_image',
+        ]);
+
+        // Get global price bounds across ALL active products (not paginated)
+        $priceStats = DB::table('product_variants')
+            ->join('products', 'products.id', '=', 'product_variants.product_id')
+            ->where('products.status', 'active')
+            ->selectRaw('MIN(product_variants.price) as min_price, MAX(product_variants.price) as max_price')
+            ->first();
+
+        $priceMin = (int) floor($priceStats->min_price ?? 0);
+        $priceMax = (int) ceil($priceStats->max_price ?? 500000);
+
+        $category = Category::where('slug', $slug)->firstOrFail();
+        $products = Product::with(['category', 'variants.color', 'variants.size'])
+            ->where('category_id', $category->id)
+            ->where('status', 'active')
+            ->latest()
+            ->paginate(12);
+
+        return view('products', compact('categories', 'heroBanners', 'seo', 'products', 'priceMin', 'priceMax', 'colors'));
+    }
+
     public function productDetails($slug)
     {
         $categories = Category::orderBy('name')->get();

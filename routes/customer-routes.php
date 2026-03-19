@@ -10,6 +10,7 @@ Route::get('/', [IndexController::class, 'index'])->name('home');
 
 // Products ==========================================================================
 Route::get('/products', [ProductController::class, 'allProducts'])->name('product.all');
+Route::get('/products/{slug}', [ProductController::class, 'categoryWiseAllProducts'])->name('product.all.category');
 Route::get('/{slug}', [ProductController::class, 'productDetails'])->name('product.detail');
 
 

@@ -19,7 +19,7 @@
                             <a href="#" class="dropdown-toggle">Categories <i class="fas fa-chevron-down"></i></a>
                             <ul class="dropdown-menu">
                                 @foreach ($categories as $category)
-                                <li><a href="#">{{ $category->name }}</a></li>
+                                <li><a href="{{route('product.all.category', $category->slug)}}">{{ $category->name }}</a></li>
                                 @endforeach
                             </ul>
                         </div>
@@ -61,7 +61,7 @@
                 </button>
                 <div class="mobile-dropdown-content">
                     @foreach ($categories as $category)
-                    <a href="#">{{ $category->name }}</a>
+                    <a href="{{route('product.all.category', $category->slug)}}">{{ $category->name }}</a>
                     @endforeach
                 </div>
             </div>
