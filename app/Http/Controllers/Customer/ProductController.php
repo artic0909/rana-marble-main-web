@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Pincode;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
@@ -98,6 +99,13 @@ class ProductController extends Controller
     {
         $categories = Category::orderBy('name')->get();
 
+        $pincodes = Pincode::all();
+
+        $categoryWiseAllProducts = Product::with(['category', 'variants.color', 'variants.size'])
+            ->where('status', 'active')
+            ->latest()
+            ->get();
+
         $product = Product::with([
             'category',
             'images',
@@ -115,6 +123,6 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('product-detail', compact('product', 'related', 'categories'));
+        return view('product-detail', compact('product', 'related', 'categories', 'pincodes', 'categoryWiseAllProducts'));
     }
 }

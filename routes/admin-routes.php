@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\PincodeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReturnController;
@@ -42,6 +43,12 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
     Route::post('/colors/edit/{id}', [ColorController::class, 'edit'])->name('colors.edit');
     Route::post('/colors/delete/{id}', [ColorController::class, 'delete'])->name('colors.delete');
+
+    // Pincode ==========================================================================
+    Route::get('/pincode', [PincodeController::class, 'index'])->name('pincode');
+    Route::post('/pincode', [PincodeController::class, 'store'])->name('pincodes.store');
+    Route::post('/pincode/edit/{id}', [PincodeController::class, 'edit'])->name('pincodes.edit');
+    Route::post('/pincode/delete/{id}', [PincodeController::class, 'delete'])->name('pincodes.delete');
 
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 

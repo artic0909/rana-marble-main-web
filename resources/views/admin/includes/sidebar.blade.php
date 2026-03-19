@@ -29,6 +29,9 @@
                   <a href="{{ route('admin.colors') }}" class="nav-link-item {{ request()->routeIs('admin.colors') ? 'active' : '' }}"><i class="bi bi-ticket-perforated"></i><span
                                   class="nav-text">Colors</span></a>
 
+                  <a href="{{ route('admin.pincode') }}" class="nav-link-item {{ request()->routeIs('admin.pincode') ? 'active' : '' }}"><i class="bi bi-ticket-perforated"></i><span
+                                  class="nav-text">Pincode</span></a>
+
                   <a href="{{ route('admin.reviews') }}" class="nav-link-item {{ request()->routeIs('admin.reviews') ? 'active' : '' }}"><i class="bi bi-star"></i><span
                                   class="nav-text">Reviews</span></a>
 

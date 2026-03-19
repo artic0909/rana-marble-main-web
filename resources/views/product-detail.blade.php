@@ -34,54 +34,106 @@
         <div class="gallery-col">
             <div class="main-image-wrap" id="mainImgWrap" onclick="openLightbox(currentImg)">
                 <div class="gallery-badge">
-                    <span class="g-badge bestseller">✦ Bestseller</span>
-                    <!-- <span class="g-badge handcrafted">Handcrafted</span> -->
+                    <span class="g-badge bestseller">✦ {{ $product->category->name }}</span>
                 </div>
-                <button class="wish-main" id="wishMainBtn" onclick="event.stopPropagation(); toggleMainWish()"
+                <button class="wish-main" id="wishMainBtn"
+                    onclick="event.stopPropagation(); toggleMainWish()"
                     title="Add to Wishlist">
                     <i class="fas fa-heart"></i>
                 </button>
-                <!-- Main Image View -->
-                <img id="mainImg" src="./img/hero.png" alt="Royal Tri-Shikhara White Marble Mandir – Rana Marble" />
-                <!-- Main Video View (Hidden by default) -->
-                <video id="mainVideo" controls style="display: none; width: 100%; height: 100%; object-fit: cover;">
+
+                <!-- Main Image -->
+                <img id="mainImg"
+                    src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
+                    alt="{{ $product->name }}"
+                    style="transition: opacity 0.18s ease;" />
+
+                <!-- Main Video (hidden by default) -->
+                <video id="mainVideo" controls
+                    style="display:none; width:100%; height:100%; object-fit:cover;">
                     <source src="" type="video/mp4" id="mainVideoSource">
                     Your browser does not support the video tag.
                 </video>
-                <div class="zoom-hint" id="zoomHint"><i class="fas fa-search-plus"></i> Click to Zoom</div>
+
+                <div class="zoom-hint" id="zoomHint">
+                    <i class="fas fa-search-plus"></i> Click to Zoom
+                </div>
             </div>
 
             <!-- Thumbnails -->
             <div class="thumbnails">
-                <!-- Image Thumbs -->
-                <div class="thumb active" onclick="switchMedia(this, 'image', './img/hero.png')">
-                    <img src="./img/hero.png" alt="Front View" />
+
+                {{-- Main product image as first thumb --}}
+                @if($product->main_image)
+                <div class="thumb active"
+                    onclick="switchMedia(this, 'image', '{{ Storage::url($product->main_image) }}')">
+                    <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->name }}" />
                 </div>
-                <div class="thumb" onclick="switchMedia(this, 'image', './img/hero2.png')">
-                    <img src="./img/hero2.png" alt="Side Angle" />
-                </div>
-                <div class="thumb" onclick="switchMedia(this, 'image', './img/hero.png')">
-                    <img src="./img/hero.png" alt="Detail View" />
-                </div>
-                <!-- Video Thumb -->
+                @endif
+
+                {{-- Gallery images & videos --}}
+                @foreach($product->images as $media)
+                @if($media->type === 'video')
                 <div class="thumb video-thumb"
-                    onclick="switchMedia(this, 'video', 'https://www.w3schools.com/html/mov_bbb.mp4')">
-                    <img src="./img/hero2.png" alt="Video View" style="filter: brightness(0.6);" />
+                    onclick="switchMedia(this, 'video', '{{ Storage::url($media->image) }}')">
+                    {{-- Use a video element with preload to grab first frame as poster --}}
+                    <video
+                        src="{{ Storage::url($media->image) }}"
+                        style="width:100%;height:100%;object-fit:cover;filter:brightness(0.6);pointer-events:none;"
+                        preload="metadata"
+                        muted
+                        playsinline>
+                    </video>
                     <div class="play-icon-overlay"><i class="fas fa-play"></i></div>
                 </div>
+                @else
+                <div class="thumb"
+                    onclick="switchMedia(this, 'image', '{{ Storage::url($media->image) }}')">
+                    <img src="{{ Storage::url($media->image) }}" alt="{{ $product->name }}" />
+                </div>
+                @endif
+                @endforeach
+
             </div>
         </div>
+
+        {{-- Pass first media src to JS --}}
+        <script>
+            // Set initial currentImg to main product image
+            currentImg = "{{ $product->main_image ? Storage::url($product->main_image) : '' }}";
+            currentMediaType = "image";
+        </script>
 
         <!-- ─── INFO COLUMN ─── -->
         <div class="info-col">
             <div class="product-tag-row">
-                <span class="ptag cat"><i class="fas fa-place-of-worship"></i> &nbsp;Home Mandir</span>
+                <span class="ptag cat"><i class="fas fa-place-of-worship"></i> &nbsp;{{ $product->category->name }}</span>
                 <span class="ptag instock"><i class="fas fa-circle" style="font-size:0.5rem;"></i> &nbsp;Available
                     to Order</span>
             </div>
 
             <h1 class="product-title">{{ $product->name }}</h1>
-            <h1 class="product-title">Price: <span class="price">₹ 1,50,000</span></h1>
+            <!-- {{-- Price — shows first variant price by default --}} -->
+            @php
+            $variantsJson = $product->variants->map(fn($v) => [
+            'id' => $v->id,
+            'size_id' => $v->size_id,
+            'color_id' => $v->color_id,
+            'price' => $v->price,
+            'size' => $v->size?->name,
+            'color' => $v->color?->name,
+            'hex' => $v->color?->hex ?? '#ccc',
+            ])->values();
+
+            $firstVariant = $product->variants->first();
+            $uniqueSizes = $product->variants->whereNotNull('size_id')->unique('size_id')->values();
+            @endphp
+            <!-- {{-- Price --}} -->
+            <h1 class="product-title">
+                Price: <span class="price" id="variantPrice">
+                    ₹ {{ number_format($firstVariant?->price ?? 0, 2) }}
+                </span>
+            </h1>
 
             <div class="rating-row">
                 <div class="stars">★★★★★</div>
@@ -89,69 +141,72 @@
                 <span class="divider-dot">·</span>
                 <span class="review-count"><a href="#tab-reviews">24 Reviews</a></span>
                 <span class="divider-dot">·</span>
-                <span class="review-count">SKU: <strong>RM-MND-TRI-001</strong></span>
+                <span class="review-count">SKU: <strong>{{ $product->sku }}</strong></span>
             </div>
 
 
-            <!-- Size Selector -->
+            <!-- {{-- Size Selector --}} -->
+            @if($uniqueSizes->count())
             <div class="variant-section">
-                <div class="variant-label"><i class="fas fa-ruler-combined" style="color:var(--saffron);"></i>
-                    Select Size <span id="selectedSize">(Width 36 in × Depth 24 in)</span></div>
+                <div class="variant-label">
+                    <i class="fas fa-ruler-combined" style="color:var(--saffron);"></i>
+                    Select Size <span id="selectedSize">({{ $firstVariant?->size?->name ?? '' }})</span>
+                </div>
                 <div class="size-options">
-                    <div class="size-opt" onclick="selectSize(this, '24 × 24 in')">24 × 24 in</div>
-                    <div class="size-opt" onclick="selectSize(this, '30 × 24 in')">30 × 24 in</div>
-                    <div class="size-opt active" onclick="selectSize(this, '36 × 24 in')">36 × 24 in</div>
-                    <div class="size-opt" onclick="selectSize(this, '42 × 24 in')">42 × 24 in</div>
-                    <div class="size-opt" onclick="selectSize(this, '48 × 24 in')">48 × 24 in</div>
+                    @foreach($uniqueSizes as $i => $variant)
+                    <div class="size-opt {{ $i === 0 ? 'active' : '' }}"
+                        data-size-id="{{ $variant->size_id }}"
+                        onclick="selectSize(this, '{{ $variant->size?->name }}')">
+                        {{ $variant->size?->name }}
+                    </div>
+                    @endforeach
                 </div>
             </div>
+            @endif
 
-            <!-- Finish Selector -->
-            <div class="variant-section">
-                <div class="variant-label"><i class="fas fa-palette" style="color:var(--saffron);"></i> Finish <span
-                        id="selectedFinish">(Pure White Polish)</span></div>
-                <div class="finish-options">
-                    <div class="finish-opt active" onclick="selectFinish(this, 'Pure White Polish')">
-                        <div class="finish-swatch" style="background:#F8F5EE; border:1.5px solid #ddd;"></div>
-                        <span class="finish-name">White</span>
-                    </div>
-                    <div class="finish-opt" onclick="selectFinish(this, 'Gold Painted')">
-                        <div class="finish-swatch" style="background:linear-gradient(135deg,#C9A84C,#F0D080);">
-                        </div>
-                        <span class="finish-name">Gold</span>
-                    </div>
-                    <div class="finish-opt" onclick="selectFinish(this, 'Multicolour Painted')">
-                        <div class="finish-swatch"
-                            style="background:conic-gradient(#D4722A,#C9A84C,#6B1A1A,#2D1B4E,#D4722A);"></div>
-                        <span class="finish-name">Multi</span>
-                    </div>
-                    <div class="finish-opt" onclick="selectFinish(this, 'Natural Polish')">
-                        <div class="finish-swatch" style="background:linear-gradient(135deg,#E8E0D0,#C0B89A);">
-                        </div>
-                        <span class="finish-name">Natural</span>
-                    </div>
+            <!-- {{-- Color / Finish Selector --}} -->
+            <div class="variant-section" id="colorSection">
+                <div class="variant-label">
+                    <i class="fas fa-palette" style="color:var(--saffron);"></i>
+                    Finish <span id="selectedFinish">({{ $firstVariant?->color?->name ?? '' }})</span>
+                </div>
+                <div class="finish-options" id="finishOptions">
+                    {{-- Populated by JS --}}
                 </div>
             </div>
 
             <!-- Pincode Input -->
+            {{-- Pass pincodes to JS --}}
+            @php
+            $pincodesJson = $pincodes->map(fn($p) => [
+            'name' => (string) $p->name,
+            'fees' => (float) $p->fees,
+            ])->values();
+            @endphp
+            <script>
+                window.PINCODES = {
+                    !!json_encode($pincodesJson) !!
+                };
+            </script>
             <div class="variant-section">
                 <div class="variant-label">
-                    <i class="fas fa-map-marker-alt" style="color:var(--saffron);"></i> Pincode
+                    <i class="fas fa-map-marker-alt" style="color:var(--saffron);"></i> Delivery Pincode
                 </div>
                 <div class="pincode-row">
-                    <input type="text" id="pincodeInput" placeholder="Enter 6-digit Pincode" maxlength="6"
-                        inputmode="numeric" oninput="validatePincode()" />
+                    <input type="text" id="pincodeInput"
+                        placeholder="Enter 6-digit Pincode"
+                        maxlength="6"
+                        inputmode="numeric"
+                        oninput="validatePincode()" />
                     <button class="btn-email-cta" onclick="checkDelivery()">
                         <i class="fas fa-truck"></i> Check
                     </button>
                 </div>
-                <div id="deliveryResult"></div>
+                <div id="deliveryResult" style="margin-top:10px;font-size:0.85rem;"></div>
             </div>
 
             <p class="product-short-desc">
-                A three-spired temple mandir of extraordinary craftsmanship — carved entirely from Grade-A Makrana
-                white marble by master artisans. Peacock finials, swastika medallions, and floral jharokha arches
-                make this a centrepiece of devotion.
+                {{ $product->description }}
             </p>
 
             <!-- CTA Buttons -->
@@ -181,7 +236,7 @@
             </div>
 
             <!-- Key Highlights -->
-            <div class="highlights">
+            <!-- <div class="highlights">
                 <div class="highlights-title"><i class="fas fa-gem"></i> Key Highlights</div>
                 <div class="highlights-grid">
                     <div class="highlight-item"><i class="fas fa-check-circle"></i><span>100% Pure Makrana White
@@ -201,7 +256,7 @@
                     <div class="highlight-item"><i class="fas fa-check-circle"></i><span>Pan-India Delivery with
                             Assembly</span></div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- ─── WRITE A REVIEW ─── -->
             <div class="write-review-section">
@@ -270,8 +325,8 @@
                 class="fas fa-star"></i> Reviews (24)</button>
         <button class="tab-btn" onclick="switchTab(this,'tab-desc')"><i class="fas fa-align-left"></i>
             Description</button>
-        <button class="tab-btn" onclick="switchTab(this,'tab-specs')"><i class="fas fa-list-ul"></i>
-            Specifications</button>
+        <!-- <button class="tab-btn" onclick="switchTab(this,'tab-specs')"><i class="fas fa-list-ul"></i>
+            Specifications</button> -->
         <button class="tab-btn" onclick="switchTab(this,'tab-shipping')"><i class="fas fa-truck"></i> Shipping &
             Care</button>
         <button class="tab-btn" onclick="switchTab(this,'tab-custom')"><i class="fas fa-pencil-ruler"></i> Custom
@@ -282,14 +337,8 @@
     <div class="tab-panel" id="tab-desc">
         <div class="desc-content">
             <div class="desc-text">
-                <h3><i class="fas fa-om"></i> About This Mandir</h3>
-                <p>The Royal Tri-Shikhara Mandir is the crown jewel of our Flagship collection — a three-spired home
-                    temple that embodies centuries of Rajasthani marble craftsmanship. Carved entirely by hand from
-                    the purest Grade-A Makrana white marble, the same stone that graces the Taj Mahal, this mandir
-                    brings an aura of divine grandeur into your home.</p>
-                <p>Each mandir takes our master artisans 6–8 weeks to complete. Every curve, every petal, every
-                    motif is individually hand-carved — no moulding, no casting. The result is a one-of-a-kind
-                    spiritual sanctuary that will be a treasured heirloom for generations.</p>
+                <h3><i class="fas fa-om"></i> About {{ $product->name }}</h3>
+                <p>{{ $product->description }}</p>
 
                 <h3 style="margin-top:20px;"><i class="fas fa-carving"></i> Carving Details</h3>
                 <ul>
@@ -313,13 +362,13 @@
                 </ul>
             </div>
             <div class="desc-image">
-                <img src="./img/hero.png" alt="Royal Tri-Shikhara Mandir Detail" />
+                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="Royal Tri-Shikhara Mandir Detail" />
             </div>
         </div>
     </div>
 
     <!-- ─── SPECIFICATIONS TAB ─── -->
-    <div class="tab-panel" id="tab-specs">
+    <!-- <div class="tab-panel" id="tab-specs">
         <div class="specs-grid">
 
             <div class="spec-card">
@@ -471,7 +520,7 @@
             </div>
 
         </div>
-    </div>
+    </div> -->
 
     <!-- ─── DESCRIPTION TAB ─── -->
     <div class="tab-panel active" id="tab-reviews">
@@ -692,7 +741,7 @@
                 </div>
             </div>
             <div class="desc-image">
-                <img src="./img/hero.png" alt="Gold Painted Custom Marble Mandir" />
+                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="Gold Painted Custom Marble Mandir" />
             </div>
         </div>
     </div>
@@ -708,95 +757,25 @@
         </div>
 
         <div class="related-carousel" id="relatedCarousel">
-
+            @foreach($categoryWiseAllProducts as $product)
             <div class="product-card">
                 <div class="product-img-wrap">
-                    <img src="./img/hero2.png" alt="Peacock Arched Open Mandir" loading="lazy" />
-                    <div class="prod-badge">Custom</div>
+                    <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
+                    <div class="prod-badge">{{ $product->category->name }}</div>
                     <div class="prod-actions">
                         <button class="prod-action-btn" onclick="toggleWishlist(this)"><i
                                 class="fas fa-heart"></i></button>
-                        <a href="product-detail.html" class="prod-action-btn"><i class="fas fa-eye"></i></a>
+                        <a href="{{ route('product.detail', $product->slug) }}" class="prod-action-btn"><i class="fas fa-eye"></i></a>
                     </div>
                 </div>
                 <div class="prod-info">
-                    <div class="prod-cat">Open Style Mandirs</div>
-                    <div class="prod-name">Peacock Arched Open Mandir</div>
-                    <div class="prod-name">Price: ₹125,000</div>
-                    <div class="prod-meta">
-                        <div class="prod-size"><i class="fas fa-ruler-combined"></i> 42 × 24 in</div>
-                        <br><a href="product-detail.html" class="btn-add-list"
+                    <div class="prod-name">{{ $product->name }}</div>
+                    <div class="prod-meta"><a href="{{ route('product.detail', $product->slug) }}" class="btn-add-list"
                             style="width: 100%; margin-top: 8px;">ADD TO CART</a>
                     </div>
                 </div>
             </div>
-
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Om Suraj Gold Painted Mandir" loading="lazy" />
-                    <div class="prod-badge new" style="background:var(--deep-purple);">New</div>
-                    <div class="prod-actions">
-                        <button class="prod-action-btn" onclick="toggleWishlist(this)"><i
-                                class="fas fa-heart"></i></button>
-                        <a href="product-detail.html" class="prod-action-btn"><i class="fas fa-eye"></i></a>
-                    </div>
-                </div>
-                <div class="prod-info">
-                    <div class="prod-cat">Gold Painted Mandirs</div>
-                    <div class="prod-name">Om Suraj Gold-Painted Mandir</div>
-                    <div class="prod-name">Price: ₹125,000</div>
-                    <div class="prod-meta">
-                        <div class="prod-size"><i class="fas fa-ruler-combined"></i> 30 × 24 in</div>
-                        <br><a href="product-detail.html" class="btn-add-list"
-                            style="width: 100%; margin-top: 8px;">ADD TO CART</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero2.png" alt="Om Surya Compact Mandir" loading="lazy" />
-                    <div class="prod-badge">Popular</div>
-                    <div class="prod-actions">
-                        <button class="prod-action-btn" onclick="toggleWishlist(this)"><i
-                                class="fas fa-heart"></i></button>
-                        <a href="product-detail.html" class="prod-action-btn"><i class="fas fa-eye"></i></a>
-                    </div>
-                </div>
-                <div class="prod-info">
-                    <div class="prod-cat">Compact Mandirs</div>
-                    <div class="prod-name">Om Surya Compact Mandir</div>
-                    <div class="prod-name">Price: ₹125,000</div>
-                    <div class="prod-meta">
-                        <div class="prod-size"><i class="fas fa-ruler-combined"></i> 30 × 24 in</div>
-                        <br><a href="product-detail.html" class="btn-add-list"
-                            style="width: 100%; margin-top: 8px;">ADD TO CART</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-img-wrap">
-                    <img src="./img/hero.png" alt="Classic Single Shikhara Mandir" loading="lazy" />
-                    <div class="prod-badge" style="background:var(--deep-purple);">Eco</div>
-                    <div class="prod-actions">
-                        <button class="prod-action-btn" onclick="toggleWishlist(this)"><i
-                                class="fas fa-heart"></i></button>
-                        <a href="product-detail.html" class="prod-action-btn"><i class="fas fa-eye"></i></a>
-                    </div>
-                </div>
-                <div class="prod-info">
-                    <div class="prod-cat">Eco Series</div>
-                    <div class="prod-name">Classic Single Shikhara Mandir</div>
-                    <div class="prod-name">Price: ₹125,000</div>
-                    <div class="prod-meta">
-                        <div class="prod-size"><i class="fas fa-ruler-combined"></i> 24 × 24 in</div>
-                        <br><a href="product-detail.html" class="btn-add-list"
-                            style="width: 100%; margin-top: 8px;">ADD TO CART</a>
-                    </div>
-                </div>
-            </div>
-
+            @endforeach
         </div>
     </div>
 </section>
@@ -831,5 +810,134 @@
 </div>
 
 <script src="./js/product-details.js"></script>
+
+
+<!-- {{-- Pass all variants to JS --}} -->
+<script>
+    window.VARIANTS = {
+        !!json_encode($variantsJson) !!
+    };
+    window.SELECTED = {
+        sizeId: {
+            {
+                $firstVariant ? - > size_id ?? 'null'
+            }
+        },
+        colorId: {
+            {
+                $firstVariant ? - > color_id ?? 'null'
+            }
+        },
+    };
+</script>
+
+
+<script>
+    /* ─── Init on page load ─── */
+    document.addEventListener("DOMContentLoaded", () => {
+        if (window.SELECTED && window.SELECTED.sizeId) {
+            renderColors(window.SELECTED.sizeId, window.SELECTED.colorId);
+            updatePrice();
+        }
+    });
+
+    /* ─── Select Size ─── */
+    function selectSize(el, label) {
+        document.querySelectorAll(".size-opt").forEach(o => o.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("selectedSize").textContent = "(" + label + ")";
+
+        const sizeId = parseInt(el.dataset.sizeId);
+        window.SELECTED.sizeId = sizeId;
+
+        // Get first available color for this size
+        const firstForSize = window.VARIANTS.find(v => v.size_id === sizeId);
+        window.SELECTED.colorId = firstForSize ? firstForSize.color_id : null;
+
+        // Re-render colors for this size, auto-select first
+        renderColors(sizeId, window.SELECTED.colorId);
+        updatePrice();
+    }
+
+    /* ─── Select Color ─── */
+    function selectFinish(el, label) {
+        document.querySelectorAll(".finish-opt").forEach(o => o.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("selectedFinish").textContent = "(" + label + ")";
+        window.SELECTED.colorId = parseInt(el.dataset.colorId);
+        updatePrice();
+    }
+
+    /* ─── Render Colors for a Given Size ─── */
+    function renderColors(sizeId, activeColorId) {
+        const container = document.getElementById("finishOptions");
+        if (!container) return;
+
+        // Get all variants matching this size
+        const sizeVariants = window.VARIANTS.filter(v => v.size_id === sizeId);
+
+        if (!sizeVariants.length) {
+            container.innerHTML = "<p style='color:#999;font-size:0.85rem;'>No finishes available for this size.</p>";
+            document.getElementById("colorSection").style.display = "none";
+            return;
+        }
+
+        document.getElementById("colorSection").style.display = "";
+
+        container.innerHTML = sizeVariants.map(v => `
+        <div class="finish-opt ${v.color_id === activeColorId ? 'active' : ''}"
+            data-color-id="${v.color_id}"
+            onclick="selectFinish(this, '${v.color}')">
+            <div class="finish-swatch"
+                style="background:${v.hex};border:1.5px solid rgba(0,0,0,0.1);">
+            </div>
+            <span class="finish-name">${v.color}</span>
+        </div>
+    `).join("");
+
+        // Update selected finish label
+        const active = sizeVariants.find(v => v.color_id === activeColorId) || sizeVariants[0];
+        if (active) {
+            document.getElementById("selectedFinish").textContent = "(" + active.color + ")";
+        }
+    }
+
+    /* ─── Update Price based on selected size + color ─── */
+    function updatePrice() {
+        const priceEl = document.getElementById("variantPrice");
+        if (!priceEl) return;
+
+        const variant = window.VARIANTS.find(v =>
+            v.size_id === window.SELECTED.sizeId &&
+            v.color_id === window.SELECTED.colorId
+        );
+
+        if (variant) {
+            priceEl.textContent = "₹ " + formatPrice(variant.price);
+            return;
+        }
+
+        // Fallback: show range for selected size
+        const sizeMatches = window.VARIANTS.filter(v => v.size_id === window.SELECTED.sizeId);
+        if (sizeMatches.length) {
+            const min = Math.min(...sizeMatches.map(v => v.price));
+            const max = Math.max(...sizeMatches.map(v => v.price));
+            priceEl.textContent = min === max ?
+                "₹ " + formatPrice(min) :
+                "₹ " + formatPrice(min) + " — ₹ " + formatPrice(max);
+            return;
+        }
+
+        priceEl.textContent = "Price on request";
+    }
+
+    /* ─── Format price Indian style ─── */
+    function formatPrice(n) {
+        return Number(n).toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+</script>
 
 @endsection
