@@ -36,6 +36,9 @@ class IndexController extends Controller
         // SEO
         $seo = Setting::getMany([
             'store_name',
+            'store_email',
+            'store_phone',
+            'store_address',
             'meta_title',
             'meta_description',
             'meta_keywords',

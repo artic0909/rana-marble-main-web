@@ -95,8 +95,16 @@
                         <a href="{{ route('product.detail', $product->slug) }}" class="action-btn" title="Quick View">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="https://wa.me/919876543210?text=I am interested in the Royal Tri-Shikhara Mandir"
-                            class="action-btn" title="WhatsApp" target="_blank">
+                        @php
+                        $phone = \App\Models\Setting::get('store_phone');
+                        $message = urlencode(
+                        'Hi! I am interested in ' . $product->name .
+                        "\n\n🔗 " . route('product.detail', $product->slug)
+                        );
+                        @endphp
+
+                        <a href="https://wa.me/{{ $phone }}?text={{ $message }}"
+                            class="action-btn" target="_blank" title="WhatsApp">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
@@ -112,7 +120,7 @@
                     <div class="product-price"
                         style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; font-family: \'Cinzel\', serif;">
                         Price: ₹{{ number_format($min, 2) }}
-                                @if($min != $max) — ₹{{ number_format($max, 2) }} @endif
+                        @if($min != $max) — ₹{{ number_format($max, 2) }} @endif
                     </div>
                     @endif
                     <div class="product-meta" style="margin-top: 10px;">
@@ -128,7 +136,7 @@
 
 
         <div style="text-align:center; margin-top: 48px;">
-            <a href="products.html" class="btn-primary" style="display:inline-flex;">
+            <a href="{{ route('product.all') }}" class="btn-primary" style="display:inline-flex;">
                 <i class="fas fa-th-large"></i> View All Products
             </a>
         </div>

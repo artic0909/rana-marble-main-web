@@ -13,7 +13,7 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="{{route('home')}}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
-                    <li><a href="{{route('allProducts')}}" class="{{ request()->routeIs('allProducts') ? 'active' : '' }}">All Products</a></li>
+                    <li><a href="{{route('product.all')}}" class="{{ request()->routeIs('product.*') ? 'active' : '' }}">All Products</a></li>
                     <li>
                         <div class="nav-dropdown">
                             <a href="#" class="dropdown-toggle">Categories <i class="fas fa-chevron-down"></i></a>
@@ -54,7 +54,7 @@
         <!-- Mobile Nav -->
         <nav class="mobile-nav" id="mobileNav">
             <a href="{{route('home')}}">Home</a>
-            <a href="{{route('allProducts')}}">All Products</a>
+            <a href="{{route('product.all')}}">All Products</a>
             <div class="mobile-dropdown">
                 <button class="mobile-dropdown-btn" onclick="this.parentElement.classList.toggle('active')">
                     Categories <i class="fas fa-chevron-down"></i>

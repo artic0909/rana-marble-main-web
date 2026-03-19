@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class, 'index'])->name('home');
 
-// Product details
-Route::get('/{slug}', [ProductController::class, 'index'])->name('product.detail');
+// Products ==========================================================================
+Route::get('/products', [ProductController::class, 'allProducts'])->name('product.all');
+Route::get('/{slug}', [ProductController::class, 'productDetails'])->name('product.detail');
 
 
-Route::get('/products', [CustomerController::class, 'allProducts'])->name('allProducts');
+
 Route::get('/about', [CustomerController::class, 'about'])->name('about');
 Route::get('/contact', [CustomerController::class, 'contact'])->name('contact');
 Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');

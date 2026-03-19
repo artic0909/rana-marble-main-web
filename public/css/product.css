@@ -834,19 +834,19 @@ input[type="range"].dual-range::-webkit-slider-thumb {
 }
 
 .product-card {
-  background: white;
+  /* background: white; */
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(201, 168, 76, 0.18);
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); */
+  /* border: 1px solid rgba(201, 168, 76, 0.18); */
   transition: all 0.3s;
   position: relative;
 }
 
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.11);
-  border-color: var(--gold);
+  /* box-shadow: 0 16px 48px rgba(0, 0, 0, 0.11); */
+  /* border-color: var(--gold); */
 }
 
 /* List view card */
@@ -876,7 +876,7 @@ input[type="range"].dual-range::-webkit-slider-thumb {
   position: relative;
   overflow: hidden;
   aspect-ratio: 3/4;
-  background: var(--cream-dk);
+  /* background: var(--cream-dk); */
 }
 
 .product-img-wrap img {

@@ -71,11 +71,18 @@
 
     <!-- Topbar -->
     <div class="topbar">
-        <a href="tel:+919876543210"><i class="fas fa-phone-alt"></i> +91 98765 43210</a>
-        <a href="/cdn-cgi/l/email-protection#523b3c343d1220333c333f3320303e37377c313d3f"><i class="fas fa-envelope"></i>
+        <a href="tel:+919876543210"><i class="fas fa-phone"></i> {{ \App\Models\Setting::get('store_phone') }}</a>
+        <a href="mailto:{{ \App\Models\Setting::get('store_email') }}"><i class="fas fa-envelope"></i>
             <span class="__cf_email__"
-                data-cfemail="41282f272e0133202f202c2033232d24246f222e2c">[email&#160;protected]</span></a>
-        <a href="#"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+                data-cfemail="{{ \App\Models\Setting::get('store_email') }}">{{ \App\Models\Setting::get('store_email') }}</span></a>
+        @php
+        $phone = \App\Models\Setting::get('store_phone');
+        $message = urlencode('Hi! I visited your website(ranamarble.info) and would like to know more. / হ্যালো! আমি আপনার ওয়েবসাইট পরিদর্শন করেছি এবং আরও জানতে চাই।');
+        @endphp
+
+        <a href="https://wa.me/{{ $phone }}?text={{ $message }}" target="_blank">
+            <i class="fab fa-whatsapp"></i> WhatsApp Us
+        </a>
     </div>
 
 

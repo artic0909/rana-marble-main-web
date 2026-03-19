@@ -3,11 +3,15 @@
         <h2>Ready to Bring the Divine Home?</h2>
         <p>Speak directly with our artisans — describe your vision and get a personalised quote.</p>
         <div class="cta-buttons">
-            <a href="https://wa.me/919876543210?text=Namaste! I want to enquire about a marble mandir."
+            @php
+            $phone = \App\Models\Setting::get('store_phone');
+            $message = urlencode('Hi! I visited your website(ranamarble.info) and would like to know more. / হ্যালো! আমি আপনার ওয়েবসাইট পরিদর্শন করেছি এবং আরও জানতে চাই।');
+            @endphp
+            <a href="https://wa.me/{{ $phone }}?text={{ $message }}"
                 class="btn-whatsapp" target="_blank">
                 <i class="fab fa-whatsapp fa-lg"></i> Chat on WhatsApp
             </a>
-            <a href="/cdn-cgi/l/email-protection#6e070008012e1c0f000f030f1c0c020b0b400d0103" class="btn-white">
+            <a href="mailto:{{ \App\Models\Setting::get('store_email') }}" class="btn-white">
                 <i class="fas fa-envelope"></i> Send Email Enquiry
             </a>
         </div>
@@ -28,15 +32,14 @@
                     </div>
                 </div>
                 <p class="footer-about">
-                    For over 18 years, Rana Marble has been crafting sacred marble mandirs and spiritual décor
-                    with devotion and artistry from the heart of Rajasthan. Every piece is a blessing for your home.
+                    {{ \App\Models\Setting::get('meta_description') }}
                 </p>
                 <div class="footer-social">
                     <a href="#" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#" class="social-btn" title="YouTube"><i class="fab fa-youtube"></i></a>
                     <a href="#" class="social-btn" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
-                    <a href="https://wa.me/919876543210" class="social-btn" title="WhatsApp" target="_blank"><i
+                    <a href="https://wa.me/{{ $phone }}?text={{ $message }}" class="social-btn" title="WhatsApp" target="_blank"><i
                             class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
@@ -86,39 +89,38 @@
                 <div class="footer-contact">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Near Makrana Marble Mandi, Makrana, Nagaur, Rajasthan – 341505</span>
+                        <span>{{ \App\Models\Setting::get('store_address') }}</span>
                     </div>
                     <div class="contact-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <a href="tel:+919876543210">+91 98765 43210</a>
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:{{ \App\Models\Setting::get('store_phone') }}">{{ \App\Models\Setting::get('store_phone') }}</a>
                     </div>
                     <div class="contact-item">
                         <i class="fab fa-whatsapp"></i>
-                        <a href="https://wa.me/919876543210" target="_blank">WhatsApp Now</a>
+                        <a href="https://wa.me/{{ $phone }}?text={{ $message }}" target="_blank">WhatsApp Now</a>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <a href="/cdn-cgi/l/email-protection#a0c9cec6cfe0d2c1cec1cdc1d2c2ccc5c58ec3cfcd"><span
+                        <a href="mailto:{{ \App\Models\Setting::get('store_email') }}"><span
                                 class="__cf_email__"
-                                data-cfemail="422b2c242d0230232c232f2330202e27276c212d2f">[email&#160;protected]</span></a>
+                                data-cfemail="{{ \App\Models\Setting::get('store_email') }}">{{ \App\Models\Setting::get('store_email') }}</span></a>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-clock"></i>
-                        <span>Mon – Sat: 9AM – 7PM IST</span>
+                        <span>Mon – Sun: 24/7 Open</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <span>© 2026 Rana Marble. All Rights Reserved. &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a>
-                &nbsp;|&nbsp; <a href="terms.html">Terms of Use</a></span>
-            <span>Made with 🙏 in Rajasthan, India</span>
+            <span>© 2026 Rana Marble. All Rights Reserved.</span>
+            <span>Made with 🙏 in West Bengal, India</span>
         </div>
     </footer>
 
     <!-- Floating WhatsApp -->
-    <a href="https://wa.me/919876543210?text=Namaste! I want to enquire about marble mandirs." class="float-wa"
+    <a href="https://wa.me/{{ $phone }}?text={{ $message }}" class="float-wa"
         target="_blank" title="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>

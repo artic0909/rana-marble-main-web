@@ -7,13 +7,6 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-
-    public function allProducts()
-    {
-
-        return view('products');
-    }
-
     public function about()
     {
         $categories = Category::orderBy('name')->get();
