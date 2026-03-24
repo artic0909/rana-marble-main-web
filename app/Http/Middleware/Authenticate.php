@@ -45,7 +45,7 @@ class Authenticate
     protected function redirectTo($request)
     {
         if ($request->is('customer/*')) {
-            return route('customer.login');
+            return route('login');
         }
 
         if ($request->is('admin/*')) {

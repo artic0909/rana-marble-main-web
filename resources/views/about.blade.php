@@ -40,7 +40,7 @@
                 energy, tranquility, and divine grace into your home.</p>
         </div>
         <div class="story-image">
-            <img src="./img/hero.png" alt="Artisan carving marble at Rana Marble" loading="lazy" />
+            <img src="{{ asset('./img/hero.png') }}" alt="Artisan carving marble at Rana Marble" loading="lazy" />
         </div>
     </div>
 </section>

@@ -22,5 +22,13 @@ class Customer extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'address',
+        'landmark',
+        'pincode',
+        'city',
+        'state',
+        'avatar',
+        'is_active',
     ];
 }

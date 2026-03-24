@@ -37,7 +37,7 @@
                 <div class="contact-details">
                     <h3>WhatsApp Us</h3>
                     <p>Get instant quotes, share designs, or schedule a video call tour.</p>
-                    <a href="https://wa.me/919876543210"><strong>+91 98765 43210</strong></a>
+                    <a href="https://wa.me/{{ \App\Models\Setting::get('store_phone') }}"><strong>{{ \App\Models\Setting::get('store_phone') }}</strong></a>
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
                 <div class="contact-details">
                     <h3>Email Enquiries</h3>
                     <p>For custom proposals and B2B requirements.</p>
-                    <a href="mailto:info@ranamarble.com"><strong>info@ranamarble.com</strong></a>
+                    <a href="mailto:{{ \App\Models\Setting::get('store_email') }}"><strong>{{ \App\Models\Setting::get('store_email') }}</strong></a>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
                 <div class="contact-icon-wrap"><i class="fas fa-clock"></i></div>
                 <div class="contact-details">
                     <h3>Working Hours</h3>
-                    <p>Monday – Saturday:<br>9:00 AM – 7:00 PM IST</p>
+                    <p>Monday – Sunday:<br>24/7 Open</p>
                 </div>
             </div>
         </div>
@@ -64,49 +64,91 @@
             <h2 class="contact-form-heading">Send an Enquiry</h2>
             <p class="contact-form-sub">Share your requirements (size, design preferences) and our team will get
                 back to you with details.</p>
+            {{-- Success Message --}}
+            @if(session('contact_success'))
+            <div style="background:rgba(39,174,96,0.1);border:1px solid #27ae60;color:#27ae60;
+        border-radius:6px;padding:14px 18px;margin-bottom:24px;
+        font-family:'Crimson Pro',serif;font-size:0.95rem;
+        display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-check-circle"></i> {{ session('contact_success') }}
+            </div>
+            @endif
 
-            <form action="#" method="POST"
-                onsubmit="event.preventDefault(); alert('In a real site, this would submit the form!');">
-                <div class="form-group">
-                    <label for="name">Full Name *</label>
-                    <input type="text" id="name" class="form-control" placeholder="E.g. Rahul Sharma" required>
-                </div>
+            {{-- Validation Errors --}}
+            @if($errors->any())
+            <div style="background:rgba(231,76,60,0.08);border:1px solid #e74c3c;color:#e74c3c;
+        border-radius:6px;padding:14px 18px;margin-bottom:24px;
+        font-family:'Crimson Pro',serif;font-size:0.95rem;
+        display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-exclamation-circle"></i> {{ $errors->first() }}
+            </div>
+            @endif
 
-                <div class="form-row">
-                    <div class="form-group" style="flex: 1;">
-                        <label for="phone">Phone / WhatsApp *</label>
-                        <input type="tel" id="phone" class="form-control" placeholder="+91 00000 00000" required>
+            @guest('customer')
+            <form action="{{ route('contact.store') }}" method="POST">
+                @csrf
+                @endguest
+
+                @auth('customer')
+                <form action="{{ route('customer.contact.store') }}" method="POST">
+                    @csrf
+                    @endauth
+
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" class="form-control"
+                            placeholder="E.g. Rahul Sharma"
+                            value="{{ old('name', Auth::guard('customer')->user()->name ?? '') }}"
+                            required>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" class="form-control" placeholder="your@email.com">
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label for="phone">Phone / WhatsApp *</label>
+                            <input type="tel" id="phone" name="phone" class="form-control"
+                                placeholder="+91 00000 00000"
+                                value="{{ old('phone', Auth::guard('customer')->user()->phone ?? '') }}"
+                                required>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control"
+                                placeholder="your@email.com"
+                                value="{{ old('email', Auth::guard('customer')->user()->email ?? '') }}">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="interest">Interested In</label>
-                    <select id="interest" class="form-control">
-                        <option value="Home Mandir">Home Mandir</option>
-                        <option value="Temple Project">Large Temple Project</option>
-                        <option value="Custom Order">Custom Design Order</option>
-                        <option value="Marble Idols">Marble Idols</option>
-                        <option value="Other">Other Query</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="interest">Inquiry About *</label>
+                        <select id="interest" name="interest" class="form-control" required>
+                            <option value="" selected>Choose Inquiry About</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->name }}"
+                                {{ old('interest') === $category->name ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                            @endforeach
+                            <option value="Others" {{ old('interest') === 'Others' ? 'selected' : '' }}>
+                                Others
+                            </option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="message">Message / Details</label>
-                    <textarea id="message" class="form-control"
-                        placeholder="Please mention approximate size, preferred style, or any specific questions..."
-                        required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="message">Message / Details *</label>
+                        <textarea id="message" name="message" class="form-control"
+                            placeholder="Please mention approximate size, preferred style, or any specific questions..."
+                            required>{{ old('message') }}</textarea>
+                    </div>
 
-                <button type="submit" class="btn-submit">
-                    <i class="fas fa-paper-plane"></i> Send Enquiry
-                </button>
-                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: #777;">We'll respond
-                    within 24 hours.</p>
-            </form>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Send Enquiry
+                    </button>
+
+                    <p style="text-align:center;margin-top:15px;font-size:0.9rem;color:#777;">
+                        We'll respond within 24 hours.
+                    </p>
+                </form>
         </div>
 
     </div>

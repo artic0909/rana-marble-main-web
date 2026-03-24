@@ -272,9 +272,19 @@
                         alt="{{ $product->name }}" loading="lazy" />
                     <div class="product-badge">{{ $product->category->name }}</div>
                     <div class="product-actions">
-                        <button class="action-btn" onclick="toggleWishlist(this)" title="Wishlist">
+                        @guest
+                        <a href="{{route('login')}}" class="action-btn"  title="Wishlist">
                             <i class="fas fa-heart"></i>
-                        </button>
+                        </a>
+                        @endguest
+                                                @auth
+                        <button class="action-btn"
+    onclick="toggleWishlist(this, {{ $product->id }})"
+    title="Wishlist"
+    style="{{ Auth::guard('customer')->check() && $product->wishlists->where('customer_id', Auth::guard('customer')->id())->count() ? 'color:var(--saffron);' : '' }}">
+    <i class="fas fa-heart"></i>
+</button>
+@endauth
                         <a href="{{ route('product.detail', $product->slug) }}" class="action-btn" title="View Details">
                             <i class="fas fa-eye"></i>
                         </a>

@@ -89,12 +89,29 @@
                     <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
                     <div class="product-badge">Bestseller</div>
                     <div class="product-actions">
-                        <button class="action-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
+                                                @guest
+                        <a href="{{route('login')}}" class="action-btn"  title="Wishlist">
                             <i class="fas fa-heart"></i>
-                        </button>
+                        </a>
+                        @endguest
+                                                @auth
+                        <button class="action-btn"
+    onclick="toggleWishlist(this, {{ $product->id }})"
+    title="Wishlist"
+    style="{{ Auth::guard('customer')->check() && $product->wishlists->where('customer_id', Auth::guard('customer')->id())->count() ? 'color:var(--saffron);' : '' }}">
+    <i class="fas fa-heart"></i>
+</button>
+@endauth
+                        @guest
                         <a href="{{ route('product.detail', $product->slug) }}" class="action-btn" title="Quick View">
                             <i class="fas fa-eye"></i>
                         </a>
+                        @endguest
+                        @auth
+                        <a href="{{ route('customer.product.detail', $product->slug) }}" class="action-btn" title="Quick View">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        @endauth
                         @php
                         $phone = \App\Models\Setting::get('store_phone');
                         $message = urlencode(
@@ -124,7 +141,12 @@
                     </div>
                     @endif
                     <div class="product-meta" style="margin-top: 10px;">
+                        @guest
                         <a href="{{ route('product.detail', $product->slug) }}" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
+                        @endguest
+                        @auth
+                        <a href="{{ route('customer.product.detail', $product->slug) }}" class="btn-add-list" style="width: 100%;">ADD TO CART</a>
+                        @endauth
                     </div>
 
                 </div>
@@ -136,9 +158,16 @@
 
 
         <div style="text-align:center; margin-top: 48px;">
+            @guest
             <a href="{{ route('product.all') }}" class="btn-primary" style="display:inline-flex;">
                 <i class="fas fa-th-large"></i> View All Products
             </a>
+            @endguest
+            @auth
+            <a href="{{ route('customer.product.all') }}" class="btn-primary" style="display:inline-flex;">
+                <i class="fas fa-th-large"></i> View All Products
+            </a>
+            @endauth
         </div>
     </div>
 </section>

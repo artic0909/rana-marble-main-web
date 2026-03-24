@@ -13,28 +13,5 @@ class CustomerController extends Controller
         return view('about' , compact('categories'));
     }
 
-    public function contact()
-    {
-        return view('contact');
-    }
 
-    public function profile()
-    {
-        return view('profile');
-    }
-
-    public function cart()
-    {
-        return view('cart');
-    }
-
-    public function orders()
-    {
-        return view('orders');
-    }
-
-    public function wishlist()
-    {
-        return view('wishlist');
-    }
 }

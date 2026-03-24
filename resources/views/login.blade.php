@@ -371,7 +371,9 @@
 
         <div class="auth-divider"></div>
 
-        <form class="auth-form" action="#" method="post">
+        <form class="auth-form" action="{{ route('login.post') }}" method="POST">
+            @csrf
+            
             <!-- Email -->
             <div class="form-group">
                 <label for="email">Email Address</label>

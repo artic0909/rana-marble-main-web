@@ -10,7 +10,7 @@
 @section('content')
 
 <head>
-    <link rel="stylesheet" href="./css/product-details.css">
+    <link rel="stylesheet" href="{{ asset('./css/product-details.css') }}">
 </head>
 
 <!-- ══ BREADCRUMB ══ -->
@@ -36,11 +36,21 @@
                 <div class="gallery-badge">
                     <span class="g-badge bestseller">✦ {{ $product->category->name }}</span>
                 </div>
+                @guest
                 <button class="wish-main" id="wishMainBtn"
                     onclick="event.stopPropagation(); toggleMainWish()"
                     title="Add to Wishlist">
                     <i class="fas fa-heart"></i>
                 </button>
+                @endguest
+                @auth
+                <button class="wish-main" id="wishMainBtn"
+                    onclick="event.stopPropagation(); toggleWishlist(this, {{ $product->id }})"
+                    title="Add to Wishlist"
+                    style="{{ $product->wishlists->where('customer_id', Auth::guard('customer')->id())->count() ? 'color:var(--saffron);' : '' }}">
+                    <i class="fas fa-heart"></i>
+                </button>
+                @endauth
 
                 <!-- Main Image -->
                 <img id="mainImg"
@@ -184,9 +194,7 @@
             ])->values();
             @endphp
             <script>
-                window.PINCODES = {
-                    !!json_encode($pincodesJson) !!
-                };
+                window.PINCODES = {!!json_encode($pincodesJson)!!};
             </script>
             <div class="variant-section">
                 <div class="variant-label">
@@ -210,21 +218,25 @@
             </p>
 
             <!-- CTA Buttons -->
-            <div class="cta-row">
-                <button class="btn-email-cta btn-add-cart">
-                    <i class="fas fa-cart-plus"></i><span class="mobile-hide-text"> Add to Cart</span>
-                </button>
+            <form class="cta-row" id="addToCartForm" action="{{ route('customer.cart.add') }}" method="POST">
+                 @csrf
+    <input type="hidden" name="product_id" value="{{ $product->id }}">
+    <input type="hidden" name="variant_id" id="selectedVariantId" value="">
+    <input type="hidden" name="quantity" value="1">
+             <button type="button" class="btn-email-cta btn-add-cart" onclick="addToCart()">
+       Add to Cart
+        </button>
 
-                <a href="mailto:info@ranamarblee.com?subject=Enquiry: Royal Tri-Shikhara Mandir&body=Namaste, I am interested in the Royal Tri-Shikhara Mandir. Please share pricing and delivery details."
-                    class="btn-email-cta btn-buy-now">
-                    <i class="fas fa-envelope mobile-hide-icon"></i> Buy Now
-                </a>
+        <a href="mailto:info@ranamarblee.com?subject=Enquiry: {{ $product->name }}"
+            class="btn-email-cta btn-buy-now">
+            <i class="fas fa-envelope mobile-hide-icon"></i> Buy Now
+        </a>
 
-                <a href="https://wa.me/919876543210?text=Namaste! I am interested in the Royal Tri-Shikhara Mandir (SKU: RM-MND-TRI-001). Please share details and pricing."
-                    class="btn-wa-cta btn-enquiry" target="_blank">
-                    <i class="fab fa-whatsapp fa-lg mobile-hide-icon"></i> Enquiry
-                </a>
-            </div>
+        <a href="https://wa.me/919876543210?text=Namaste! I am interested in {{ $product->name }} (SKU: {{ $product->sku }})."
+            class="btn-wa-cta btn-enquiry" target="_blank">
+            <i class="fab fa-whatsapp fa-lg mobile-hide-icon"></i> Enquiry
+        </a>
+            </form>
 
 
             <!-- Enquiry Note -->
@@ -763,8 +775,19 @@
                     <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
                     <div class="prod-badge">{{ $product->category->name }}</div>
                     <div class="prod-actions">
-                        <button class="prod-action-btn" onclick="toggleWishlist(this)"><i
-                                class="fas fa-heart"></i></button>
+                                                @guest
+                        <a href="{{route('login')}}" class="action-btn"  title="Wishlist">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        @endguest
+                                                @auth
+                        <button class="action-btn"
+    onclick="toggleWishlist(this, {{ $product->id }})"
+    title="Wishlist"
+    style="{{ Auth::guard('customer')->check() && $product->wishlists->where('customer_id', Auth::guard('customer')->id())->count() ? 'color:var(--saffron);' : '' }}">
+    <i class="fas fa-heart"></i>
+</button>
+@endauth
                         <a href="{{ route('product.detail', $product->slug) }}" class="prod-action-btn"><i class="fas fa-eye"></i></a>
                     </div>
                 </div>
@@ -780,19 +803,7 @@
     </div>
 </section>
 
-<!-- ══ STICKY MOBILE CTA ══ -->
-<div class="sticky-cta-bar" id="stickyCta">
-    <a href="https://wa.me/919876543210?text=I want to enquire about the Royal Tri-Shikhara Mandir."
-        class="sticky-wa" target="_blank">
-        Add to Cart
-    </a>
-    <a href="mailto:info@ranamarblee.com?subject=Enquiry: Royal Tri-Shikhara Mandir" class="sticky-email">
-        Buy Now
-    </a>
-    <button class="sticky-wish" id="stickyWishBtn" onclick="toggleWish()">
-        <i class="fas fa-heart"></i>
-    </button>
-</div>
+
 
 <!-- ══ LIGHTBOX ══ -->
 <div id="lightbox" onclick="closeLightbox()"
@@ -809,40 +820,34 @@
     </video>
 </div>
 
-<script src="./js/product-details.js"></script>
-
-
 <!-- {{-- Pass all variants to JS --}} -->
+<script src="{{ asset('./js/product-details.js') }}"></script>
+
+{{-- Pass all variants to JS --}}
 <script>
-    window.VARIANTS = {
-        !!json_encode($variantsJson) !!
-    };
-    window.SELECTED = {
-        sizeId: {
-            {
-                $firstVariant ? - > size_id ?? 'null'
-            }
-        },
-        colorId: {
-            {
-                $firstVariant ? - > color_id ?? 'null'
-            }
-        },
-    };
+    window.VARIANTS = {!! json_encode($variantsJson) !!};
+    window.SELECTED = {!! json_encode([
+        'sizeId'  => $firstVariant?->size_id,
+        'colorId' => $firstVariant?->color_id,
+    ]) !!};
 </script>
 
-
 <script>
-    /* ─── Init on page load ─── */
     document.addEventListener("DOMContentLoaded", () => {
-        if (window.SELECTED && window.SELECTED.sizeId) {
-            renderColors(window.SELECTED.sizeId, window.SELECTED.colorId);
-            updatePrice();
-        }
+        if (!window.VARIANTS || !window.SELECTED) return;
+
+        window.SELECTED.sizeId  = parseInt(window.SELECTED.sizeId);
+        window.SELECTED.colorId = parseInt(window.SELECTED.colorId);
+
+        renderColors(window.SELECTED.sizeId, window.SELECTED.colorId);
+        updatePrice();
+        updateSelectedVariantInput(); // ← set hidden input on load
     });
 
     /* ─── Select Size ─── */
     function selectSize(el, label) {
+        if (!window.SELECTED) window.SELECTED = {};
+
         document.querySelectorAll(".size-opt").forEach(o => o.classList.remove("active"));
         el.classList.add("active");
         document.getElementById("selectedSize").textContent = "(" + label + ")";
@@ -850,66 +855,148 @@
         const sizeId = parseInt(el.dataset.sizeId);
         window.SELECTED.sizeId = sizeId;
 
-        // Get first available color for this size
         const firstForSize = window.VARIANTS.find(v => v.size_id === sizeId);
-        window.SELECTED.colorId = firstForSize ? firstForSize.color_id : null;
+        window.SELECTED.colorId = firstForSize ? parseInt(firstForSize.color_id) : null;
 
-        // Re-render colors for this size, auto-select first
         renderColors(sizeId, window.SELECTED.colorId);
         updatePrice();
+        updateSelectedVariantInput(); // ← update hidden input on size change
     }
 
-    /* ─── Select Color ─── */
+    /* ─── Select Finish ─── */
     function selectFinish(el, label) {
         document.querySelectorAll(".finish-opt").forEach(o => o.classList.remove("active"));
         el.classList.add("active");
         document.getElementById("selectedFinish").textContent = "(" + label + ")";
         window.SELECTED.colorId = parseInt(el.dataset.colorId);
         updatePrice();
+        updateSelectedVariantInput(); // ← update hidden input on color change
     }
 
     /* ─── Render Colors for a Given Size ─── */
     function renderColors(sizeId, activeColorId) {
-        const container = document.getElementById("finishOptions");
+        const container    = document.getElementById("finishOptions");
+        const colorSection = document.getElementById("colorSection");
         if (!container) return;
 
-        // Get all variants matching this size
-        const sizeVariants = window.VARIANTS.filter(v => v.size_id === sizeId);
+        const sizeVariants = window.VARIANTS.filter(v => parseInt(v.size_id) === parseInt(sizeId));
 
         if (!sizeVariants.length) {
-            container.innerHTML = "<p style='color:#999;font-size:0.85rem;'>No finishes available for this size.</p>";
-            document.getElementById("colorSection").style.display = "none";
+            container.innerHTML = "<p style='color:#999;font-size:0.85rem;'>No finishes available.</p>";
+            if (colorSection) colorSection.style.display = "none";
             return;
         }
 
-        document.getElementById("colorSection").style.display = "";
+        if (colorSection) colorSection.style.display = "";
 
         container.innerHTML = sizeVariants.map(v => `
-        <div class="finish-opt ${v.color_id === activeColorId ? 'active' : ''}"
-            data-color-id="${v.color_id}"
-            onclick="selectFinish(this, '${v.color}')">
-            <div class="finish-swatch"
-                style="background:${v.hex};border:1.5px solid rgba(0,0,0,0.1);">
+            <div class="finish-opt ${parseInt(v.color_id) === parseInt(activeColorId) ? 'active' : ''}"
+                data-color-id="${v.color_id}"
+                onclick="selectFinish(this, '${v.color}')">
+                <div class="finish-swatch"
+                    style="background:${v.hex}; border:1.5px solid rgba(0,0,0,0.1);">
+                </div>
+                <span class="finish-name">${v.color}</span>
             </div>
-            <span class="finish-name">${v.color}</span>
-        </div>
-    `).join("");
+        `).join("");
 
-        // Update selected finish label
-        const active = sizeVariants.find(v => v.color_id === activeColorId) || sizeVariants[0];
+        const active = sizeVariants.find(v => parseInt(v.color_id) === parseInt(activeColorId)) || sizeVariants[0];
         if (active) {
             document.getElementById("selectedFinish").textContent = "(" + active.color + ")";
+            window.SELECTED.colorId = parseInt(active.color_id);
         }
     }
 
-    /* ─── Update Price based on selected size + color ─── */
+    /* ─── Update hidden variant_id input ─── */
+    function updateSelectedVariantInput() {
+        const input = document.getElementById('selectedVariantId');
+        if (!input) return;
+
+        const variant = window.VARIANTS?.find(v =>
+            parseInt(v.size_id)  === parseInt(window.SELECTED?.sizeId) &&
+            parseInt(v.color_id) === parseInt(window.SELECTED?.colorId)
+        );
+
+        input.value = variant?.id ?? '';
+    }
+
+    /* ─── Add to Cart ─── */
+    function addToCart() {
+        const variantInput = document.getElementById('selectedVariantId');
+
+        if (!variantInput || !variantInput.value) {
+            alert('Please select a size and finish first.');
+            return;
+        }
+
+        const form = document.getElementById('addToCartForm');
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': form.querySelector('[name="_token"]').value,
+                'Content-Type': 'application/json',
+                'Accept':       'application/json',
+            },
+            body: JSON.stringify({
+                product_id: form.querySelector('[name="product_id"]').value,
+                variant_id: variantInput.value,
+                quantity:   form.querySelector('[name="quantity"]').value,
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showCartToast(data.message);
+                updateCartCount(data.cart_count);
+            } else if (data.redirect) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.message ?? 'Something went wrong.');
+            }
+        })
+        .catch(() => alert('Something went wrong. Please try again.'));
+    }
+
+    /* ─── Toast Notification ─── */
+    function showCartToast(msg) {
+        let toast = document.getElementById('cartToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'cartToast';
+            toast.style.cssText = `
+                position: fixed; bottom: 30px; left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #27ae60, #1e8449);
+                color: white; padding: 14px 24px; border-radius: 8px;
+                font-family: 'Cinzel', serif; font-size: 0.85rem;
+                letter-spacing: 0.08em;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                z-index: 9999; display: flex; align-items: center;
+                gap: 10px; transition: opacity 0.4s;
+            `;
+            document.body.appendChild(toast);
+        }
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+        toast.style.opacity = '1';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+    }
+
+    /* ─── Update Cart Count in Navbar ─── */
+    function updateCartCount(count) {
+        const badge = document.querySelector('.cart-count');
+        if (badge) badge.textContent = count;
+    }
+
+    /* ─── Update Price ─── */
     function updatePrice() {
         const priceEl = document.getElementById("variantPrice");
-        if (!priceEl) return;
+        if (!priceEl || !window.VARIANTS || !window.SELECTED) return;
 
         const variant = window.VARIANTS.find(v =>
-            v.size_id === window.SELECTED.sizeId &&
-            v.color_id === window.SELECTED.colorId
+            parseInt(v.size_id)  === parseInt(window.SELECTED.sizeId) &&
+            parseInt(v.color_id) === parseInt(window.SELECTED.colorId)
         );
 
         if (variant) {
@@ -917,21 +1004,23 @@
             return;
         }
 
-        // Fallback: show range for selected size
-        const sizeMatches = window.VARIANTS.filter(v => v.size_id === window.SELECTED.sizeId);
+        const sizeMatches = window.VARIANTS.filter(v =>
+            parseInt(v.size_id) === parseInt(window.SELECTED.sizeId)
+        );
+
         if (sizeMatches.length) {
             const min = Math.min(...sizeMatches.map(v => v.price));
             const max = Math.max(...sizeMatches.map(v => v.price));
-            priceEl.textContent = min === max ?
-                "₹ " + formatPrice(min) :
-                "₹ " + formatPrice(min) + " — ₹ " + formatPrice(max);
+            priceEl.textContent = min === max
+                ? "₹ " + formatPrice(min)
+                : "₹ " + formatPrice(min) + " — ₹ " + formatPrice(max);
             return;
         }
 
         priceEl.textContent = "Price on request";
     }
 
-    /* ─── Format price Indian style ─── */
+    /* ─── Format Price Indian Style ─── */
     function formatPrice(n) {
         return Number(n).toLocaleString("en-IN", {
             minimumFractionDigits: 2,

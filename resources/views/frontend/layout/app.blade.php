@@ -32,6 +32,8 @@
     <!-- Ico favicon -->
     <link rel="icon" type="image/x-icon" href="{{asset('./img/favicon.ico')}}">
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <!-- {{-- Per-page SEO (set from any view using @section) --}} -->
     <meta name="description" content="@yield('meta_description', \App\Models\Setting::get('meta_description', ''))">
@@ -93,6 +95,58 @@
 
     @include('frontend.includes.footer')
     @include('frontend.includes.scripts')
+
+
+    <script>
+        function toggleWishlist(btn, productId) {
+            fetch(`/customer/wishlist/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ??
+                            "{{ csrf_token() }}",
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+                    if (data.success) {
+                        // Toggle heart color
+                        btn.style.color = data.added ? 'var(--saffron)' : '';
+                        showWishlistToast(data.message, data.added);
+                    }
+                })
+                .catch(() => alert('Something went wrong.'));
+        }
+
+        function showWishlistToast(msg, added) {
+            let toast = document.getElementById('wishToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'wishToast';
+                toast.style.cssText = `
+            position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+            color:white;padding:14px 24px;border-radius:8px;
+            font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.08em;
+            box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:9999;
+            display:flex;align-items:center;gap:10px;transition:opacity 0.4s;
+        `;
+                document.body.appendChild(toast);
+            }
+            toast.style.background = added ?
+                'linear-gradient(135deg,#e74c3c,#c0392b)' :
+                'linear-gradient(135deg,#7f8c8d,#636e72)';
+            toast.style.opacity = '1';
+            toast.innerHTML = `<i class="fas fa-heart"></i> ${msg}`;
+            clearTimeout(toast._t);
+            toast._t = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+    </script>
 
 </body>
 

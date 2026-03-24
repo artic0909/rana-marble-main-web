@@ -439,7 +439,8 @@
 
         <div class="auth-divider"></div>
 
-        <form class="auth-form" action="#" method="post">
+        <form class="auth-form" action="{{ route('register.post') }}" method="POST">
+            @csrf
 
             <!-- Name row -->
             <div class="form-row-2">

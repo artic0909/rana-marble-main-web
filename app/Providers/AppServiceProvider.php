@@ -9,6 +9,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\View;
 use App\Http\View\Composers\SeoComposer;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,13 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         View::composer('frontend.layout.app', SeoComposer::class);
+        View::composer('frontend.layout.app', function ($view) {
+            $count = 0;
+            if (Auth::guard('customer')->check()) {
+                $count = Cart::where('customer_id', Auth::guard('customer')->id())->sum('quantity');
+            }
+            $view->with('cartCount', $count);
+        });
     }
 
     /**
@@ -40,14 +49,15 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
+        Password::defaults(
+            fn(): ?Password => app()->isProduction()
+                ? Password::min(12)
                 ->mixedCase()
                 ->letters()
                 ->numbers()
                 ->symbols()
                 ->uncompromised()
-            : null,
+                : null,
         );
     }
 }
