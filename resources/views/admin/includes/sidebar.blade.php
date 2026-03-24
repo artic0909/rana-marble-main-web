@@ -38,7 +38,7 @@
                   <div class="nav-section-label">Sales</div>
 
                   <a href="{{ route('admin.orders.index') }}" class="nav-link-item {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"><i class="bi bi-receipt"></i><span
-                                  class="nav-text">Orders <span class="badge-count">14</span></span></a>
+                                  class="nav-text">Orders</span></a>
 
                   <!-- <a href="{{ route('admin.returns.index') }}" class="nav-link-item {{ request()->routeIs('admin.returns.*') ? 'active' : '' }}"><i class="bi bi-arrow-return-left"></i><span
                                   class="nav-text">Returns <span class="badge-count">3</span></span></a>
@@ -74,10 +74,10 @@
                   <!-- <a href="" class="nav-link-item" onclick="navigate('emails')"><i class="bi bi-envelope"></i><span
                                   class="nav-text">Emails</span></a> -->
 
-                  <div class="nav-section-label">Support</div>
+                  <!-- <div class="nav-section-label">Support</div>
 
                   <a href="{{ route('admin.support') }}" class="nav-link-item {{ request()->routeIs('admin.support') ? 'active' : '' }}"><i class="bi bi-headset"></i><span
-                                  class="nav-text">Support <span class="badge-count">7</span></span></a>
+                                  class="nav-text">Support <span class="badge-count">7</span></span></a> -->
 
                   <!-- <a href="{{ route('admin.reports') }}" class="nav-link-item {{ request()->routeIs('admin.reports') ? 'active' : '' }}"><i class="bi bi-file-bar-graph"></i><span
                                   class="nav-text">Reports</span></a> -->

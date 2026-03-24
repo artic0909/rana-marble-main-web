@@ -65,8 +65,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::post('/products/{id}/update',  [ProductController::class, 'update'])->name('products.update');
     Route::post('/products/{id}/delete',  [ProductController::class, 'delete'])->name('products.delete');
 
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/show', [OrderController::class, 'show'])->name('orders.show');
+    // Orders ==========================================================================
+    Route::get('/orders',                          [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}',                  [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status',         [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
     Route::get('/returns', [ReturnController::class, 'index'])->name('returns.index');
     Route::get('/returns/show', [ReturnController::class, 'show'])->name('returns.show');

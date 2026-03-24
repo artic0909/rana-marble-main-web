@@ -92,10 +92,10 @@ class ProductController extends Controller
             'variants.*.price'    => 'required_with:variants|numeric|min:0',
 
             // SEO
-            'meta_title'       => $validated['meta_title']       ?? null,
-            'meta_description' => $validated['meta_description'] ?? null,
-            'meta_keywords'    => $validated['meta_keywords']    ?? null,
-            'og_image'         => $validated['og_image']         ?? null,
+            'meta_title'       => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords'    => 'nullable|string|max:255',
+            'og_image' => 'nullable|string',
         ]);
 
         try {

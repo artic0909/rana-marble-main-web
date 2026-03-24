@@ -119,17 +119,36 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="interest">Inquiry About *</label>
-                        <select id="interest" name="interest" class="form-control" required>
+                        <label for="inquiry_about">Inquiry About *</label>
+                        <select id="inquiry_about" name="inquiry_about" class="form-control" required>
                             <option value="" selected>Choose Inquiry About</option>
                             @foreach($categories as $category)
                             <option value="{{ $category->name }}"
-                                {{ old('interest') === $category->name ? 'selected' : '' }}>
+                                {{ old('inquiry_about') === $category->name ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                             @endforeach
-                            <option value="Others" {{ old('interest') === 'Others' ? 'selected' : '' }}>
+                            <option value="Others" {{ old('inquiry_about') === 'Others' ? 'selected' : '' }}>
                                 Others
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority">Priority *</label>
+                        <select id="priority" name="priority" class="form-control" required>
+                            <option value="" selected>Choose priority</option>
+                            
+                            <option value="High" {{ old('priority') === 'Hight' ? 'selected' : '' }}>
+                                High
+                            </option>
+
+                            <option value="Medium" {{ old('priority') === 'Medium' ? 'selected' : '' }}>
+                                Medium
+                            </option>
+
+                            <option value="Low" {{ old('priority') === 'Low' ? 'selected' : '' }}>
+                                Low
                             </option>
                         </select>
                     </div>

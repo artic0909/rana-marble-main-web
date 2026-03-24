@@ -21,27 +21,27 @@
             <div class="stat-card">
                 <div class="icon-wrap" style="background:#fff3ee;color:var(--primary)"><i
                         class="bi bi-currency-dollar"></i></div>
-                <div class="value">$48,250</div>
+                <div class="value">₹{{ $totalRevenue }}</div>
                 <div class="label">Total Revenue</div>
-                <span class="trend trend-up"><i class="bi bi-arrow-up-short"></i>+12.4%</span>
+                <!-- <span class="trend trend-up"><i class="bi bi-arrow-up-short"></i>+12.4%</span> -->
                 <i class="bi bi-currency-dollar bg-icon"></i>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="stat-card">
                 <div class="icon-wrap" style="background:#dcfce7;color:#16a34a"><i class="bi bi-receipt"></i></div>
-                <div class="value">1,284</div>
+                <div class="value">{{ $totalOrders }}</div>
                 <div class="label">Total Orders</div>
-                <span class="trend trend-up"><i class="bi bi-arrow-up-short"></i>+8.7%</span>
+                <!-- <span class="trend trend-up"><i class="bi bi-arrow-up-short"></i>+8.7%</span> -->
                 <i class="bi bi-receipt bg-icon"></i>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="stat-card">
                 <div class="icon-wrap" style="background:#dbeafe;color:#1d4ed8"><i class="bi bi-people"></i></div>
-                <div class="value">9,741</div>
+                <div class="value">{{ $totalCustomer }}</div>
                 <div class="label">Customers</div>
-                <span class="trend trend-up"><i class="bi bi-arrow-up-short"></i>+5.2%</span>
+                <!-- <span class="trend trend-up"><i class="bi bi-arrow-up-short"></i>+5.2%</span> -->
                 <i class="bi bi-people bg-icon"></i>
             </div>
         </div>
@@ -49,16 +49,16 @@
             <div class="stat-card">
                 <div class="icon-wrap" style="background:#fee2e2;color:#dc2626"><i class="bi bi-arrow-return-left"></i>
                 </div>
-                <div class="value">2.1%</div>
+                <div class="value">0%</div>
                 <div class="label">Return Rate</div>
-                <span class="trend trend-down"><i class="bi bi-arrow-down-short"></i>-0.3%</span>
+                <!-- <span class="trend trend-down"><i class="bi bi-arrow-down-short"></i>-0.3%</span> -->
                 <i class="bi bi-arrow-return-left bg-icon"></i>
             </div>
         </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="row g-3 mb-4">
+
+    <!-- <div class="row g-3 mb-4">
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-body">
@@ -146,7 +146,6 @@
         </div>
     </div>
 
-    <!-- Recent Orders + Top Products -->
     <div class="row g-3 mb-4">
         <div class="col-12 col-lg-7">
             <div class="card">
@@ -262,7 +261,7 @@
         </div>
     </div>
 
-    <!-- Activity Feed -->
+  
     <div class="row g-3">
         <div class="col-12 col-md-6">
             <div class="card">
@@ -343,7 +342,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </section>
 
 @endsection
