@@ -50,7 +50,11 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::post('/pincode/edit/{id}', [PincodeController::class, 'edit'])->name('pincodes.edit');
     Route::post('/pincode/delete/{id}', [PincodeController::class, 'delete'])->name('pincodes.delete');
 
-    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
+    // Reviews ==========================================================================
+    Route::get('reviews',                   [ReviewController::class, 'index'])->name('reviews.index');
+    Route::patch('reviews/{review}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::patch('reviews/{review}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
+    Route::delete('reviews/{review}',       [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // Products ==========================================================================
     Route::get('/products',               [ProductController::class, 'index'])->name('products.index');

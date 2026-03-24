@@ -292,92 +292,35 @@
         </div>
 
         <div class="testi-carousel" id="testiCarousel">
-            <div class="testi-card">
-                <div class="testi-stars">★★★★★</div>
-                <p class="testi-text">"The mandir arrived perfectly packed and exceeded all our expectations. The
-                    carving details are extraordinary — it looks exactly like the photos from the Rajasthan temples
-                    we had seen. Our puja room is now truly complete."</p>
-                <div class="testi-author">
-                    <div class="testi-avatar">R</div>
-                    <div>
-                        <div class="testi-name">Ramesh Agarwal</div>
-                        <div class="testi-loc"><i class="fas fa-map-marker-alt"
-                                style="color:var(--saffron);font-size:0.7rem;"></i> Mumbai, Maharashtra</div>
-                    </div>
-                </div>
-            </div>
-            <div class="testi-card">
-                <div class="testi-stars">★★★★★</div>
-                <p class="testi-text">"We ordered a custom mandir with gold painting for our new house. Rana Marble
-                    understood our vision perfectly and delivered something even more beautiful than we imagined.
-                    The quality of marble is unmatched."</p>
-                <div class="testi-author">
-                    <div class="testi-avatar">S</div>
-                    <div>
-                        <div class="testi-name">Sunita Sharma</div>
-                        <div class="testi-loc"><i class="fas fa-map-marker-alt"
-                                style="color:var(--saffron);font-size:0.7rem;"></i> Delhi, NCR</div>
-                    </div>
-                </div>
-            </div>
-            <div class="testi-card">
-                <div class="testi-stars">★★★★★</div>
-                <p class="testi-text">"Third purchase from Rana Marble — a marble idol for my mother. Each piece I
-                    have bought has been flawless. The artisanship truly reflects devotion. Highly recommend to
-                    anyone seeking divine home décor."</p>
-                <div class="testi-author">
-                    <div class="testi-avatar">P</div>
-                    <div>
-                        <div class="testi-name">Priya Menon</div>
-                        <div class="testi-loc"><i class="fas fa-map-marker-alt"
-                                style="color:var(--saffron);font-size:0.7rem;"></i> Bengaluru, Karnataka</div>
-                    </div>
-                </div>
-            </div>
-            <div class="testi-card">
-                <div class="testi-stars">★★★★★</div>
-                <p class="testi-text">"Third purchase from Rana Marble — a marble idol for my mother. Each piece I
-                    have bought has been flawless. The artisanship truly reflects devotion. Highly recommend to
-                    anyone seeking divine home décor."</p>
-                <div class="testi-author">
-                    <div class="testi-avatar">P</div>
-                    <div>
-                        <div class="testi-name">Priya Menon</div>
-                        <div class="testi-loc"><i class="fas fa-map-marker-alt"
-                                style="color:var(--saffron);font-size:0.7rem;"></i> Bengaluru, Karnataka</div>
-                    </div>
-                </div>
-            </div>
+           @foreach($reviews as $review)
+<div class="testi-card">
 
-            <div class="testi-card">
-                <div class="testi-stars">★★★★★</div>
-                <p class="testi-text">"Third purchase from Rana Marble — a marble idol for my mother. Each piece I
-                    have bought has been flawless. The artisanship truly reflects devotion. Highly recommend to
-                    anyone seeking divine home décor."</p>
-                <div class="testi-author">
-                    <div class="testi-avatar">P</div>
-                    <div>
-                        <div class="testi-name">Priya Menon</div>
-                        <div class="testi-loc"><i class="fas fa-map-marker-alt"
-                                style="color:var(--saffron);font-size:0.7rem;"></i> Bengaluru, Karnataka</div>
-                    </div>
-                </div>
-            </div>
+    {{-- Stars --}}
+    <div class="testi-stars">
+        @for ($i = 1; $i <= 5; $i++)
+            {{ $i <= $review->rating ? '★' : '☆' }}
+        @endfor
+    </div>
 
-            <div class="testi-card">
-                <div class="testi-stars">★★★★★</div>
-                <p class="testi-text">"Third purchase from Rana Marble — a marble idol for my mother. Each piece I
-                    have bought has been flawless. The artisanship truly reflects devotion. Highly recommend to
-                    anyone seeking divine home décor."</p>
-                <div class="testi-author">
-                    <div class="testi-avatar">P</div>
-                    <div>
-                        <div class="testi-name">Priya Menon</div>
-                        <div class="testi-loc"><i class="fas fa-map-marker-alt"
-                                style="color:var(--saffron);font-size:0.7rem;"></i> Bengaluru, Karnataka</div>
-                    </div>
-                </div>
+    {{-- Review text --}}
+    <p class="testi-text">"{{ $review->review }}"</p>
+
+    {{-- Author --}}
+    <div class="testi-author">
+        <div class="testi-avatar">{{ strtoupper(substr($review->name, 0, 1)) }}</div>
+        <div>
+            <div class="testi-name">{{ $review->name }}</div>
+            @if ($review->city || $review->state)
+            <div class="testi-loc">
+                <i class="fas fa-map-marker-alt" style="color:var(--saffron);font-size:0.7rem;"></i>
+                {{ implode(', ', array_filter([$review->city, $review->state])) }}
             </div>
+            @endif
+        </div>
+    </div>
+
+</div>
+@endforeach
         </div>
     </div>
 </section>

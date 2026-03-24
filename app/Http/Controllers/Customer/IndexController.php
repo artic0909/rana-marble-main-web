@@ -45,12 +45,18 @@ class IndexController extends Controller
             'og_image',
         ]);
 
+        // Reviews
+        $reviews = \App\Models\Review::where('status', 'approved')
+            ->latest()
+            ->get();
+
         return view('index', compact(
             'heroBanners',
             'secondaryBanners',
             'categories',
             'featuredProducts',
             'seo',
+            'reviews'
         ));
     }
 }

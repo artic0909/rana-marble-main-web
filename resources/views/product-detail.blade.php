@@ -147,9 +147,8 @@
 
             <div class="rating-row">
                 <div class="stars">★★★★★</div>
-                <span class="rating-val">4.9</span>
                 <span class="divider-dot">·</span>
-                <span class="review-count"><a href="#tab-reviews">24 Reviews</a></span>
+                <span class="review-count"><a href="#tab-reviews">{{ $reviewCount }} Reviews</a></span>
                 <span class="divider-dot">·</span>
                 <span class="review-count">SKU: <strong>{{ $product->sku }}</strong></span>
             </div>
@@ -270,61 +269,120 @@
                 </div>
             </div> -->
 
-            <!-- ─── WRITE A REVIEW ─── -->
-            <div class="write-review-section">
-                <h3 class="write-review-title"><i class="fas fa-star"></i> Share Your Experience</h3>
-                <form class="write-review-form" onsubmit="submitReview(event)">
-                    <div class="review-form-top">
-                        <div class="star-picker" id="starPicker">
-                            <span>Your Rating:</span>
-                            <div class="stars-input">
-                                <i class="far fa-star" onclick="setRating(1)" data-val="1"></i>
-                                <i class="far fa-star" onclick="setRating(2)" data-val="2"></i>
-                                <i class="far fa-star" onclick="setRating(3)" data-val="3"></i>
-                                <i class="far fa-star" onclick="setRating(4)" data-val="4"></i>
-                                <i class="far fa-star" onclick="setRating(5)" data-val="5"></i>
-                            </div>
-                            <input type="hidden" id="selectedRating" value="0" />
-                        </div>
-                    </div>
-                    <div class="review-form-fields">
-                        <div class="rf-row">
-                            <div class="rf-col">
-                                <label>Your Name</label>
-                                <input type="text" placeholder="e.g. Ramesh Gupta" required />
-                            </div>
-                            <div class="rf-col">
-                                <label>City / State</label>
-                                <input type="text" placeholder="e.g. Jaipur, Rajasthan" />
-                            </div>
-                        </div>
-                        <div class="rf-col full">
-                            <label>Your Review</label>
-                            <textarea rows="4" placeholder="Share your experience with this product…"
-                                required></textarea>
-                        </div>
+           {{-- ─── WRITE A REVIEW ─── --}}
+<div class="write-review-section">
+    <h3 class="write-review-title"><i class="fas fa-star"></i> Share Your Experience</h3>
 
-                        <div class="form-group review-media-upload" style="grid-column: 1 / -1; margin-top: 10px;">
-                            <label for="reviewMedia" class="r-upload-btn"
-                                style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(201, 168, 76, 0.1); border: 1px dashed var(--gold); border-radius: 4px; cursor: pointer; color: var(--text-mid); font-size: 0.9rem; transition: background 0.2s;">
-                                <i class="fas fa-camera"></i> Add Photos / Video
-                            </label>
-                            <input type="file" id="reviewMedia" name="reviewMedia"
-                                accept="image/*,video/mp4,video/webm" multiple style="display:none;"
-                                onchange="handleReviewMedia(this)">
-                            <div id="reviewMediaPreview" class="r-media-preview-container"
-                                style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
-                        </div>
+    {{-- Single unified form — works for both guest & auth --}}
+    <form class="write-review-form"
+          action="{{ route('reviews.store', $product->id) }}"
+          method="POST"
+          enctype="multipart/form-data">
+        @csrf
 
-                    </div>
-                    <button type="submit" class="btn-wa-cta" style="border:none;cursor:pointer;margin-top:14px;">
-                        <i class="fas fa-paper-plane" style="margin-right:6px;"></i> Submit Review
-                    </button>
-                    <div id="reviewSuccess" class="review-success" style="display:none;">
-                        <i class="fas fa-check-circle"></i> Thank you! Your review has been submitted.
-                    </div>
-                </form>
+        <div class="review-form-top">
+            <div class="star-picker" id="starPicker">
+                <span>Your Rating:</span>
+                <div class="stars-input">
+                    <i class="far fa-star" onclick="setRating(1)" data-val="1"></i>
+                    <i class="far fa-star" onclick="setRating(2)" data-val="2"></i>
+                    <i class="far fa-star" onclick="setRating(3)" data-val="3"></i>
+                    <i class="far fa-star" onclick="setRating(4)" data-val="4"></i>
+                    <i class="far fa-star" onclick="setRating(5)" data-val="5"></i>
+                </div>
+                <input type="hidden" name="rating" id="selectedRating" value="{{ old('rating', 0) }}" />
+                @error('rating')
+                    <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                @enderror
             </div>
+        </div>
+
+        <div class="review-form-fields">
+            <div class="rf-row">
+                <div class="rf-col">
+                    <label>Your Name</label>
+                    <input type="text"
+                           name="name"
+                           placeholder="e.g. Ramesh Gupta"
+                           required
+                           value="{{ old('name', Auth::guard('customer')->user()->name ?? '') }}" />
+                    @error('name')
+                        <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="rf-col">
+                    <label>State</label>
+                    <input type="text"
+                           name="state"
+                           placeholder="e.g. Rajasthan"
+                           value="{{ old('state', Auth::guard('customer')->user()->state ?? '') }}" />
+                    @error('state')
+                        <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="rf-col">
+                    <label>City</label>
+                    <input type="text"
+                           name="city"
+                           placeholder="e.g. Jaipur"
+                           value="{{ old('city', Auth::guard('customer')->user()->city ?? '') }}" />
+                    @error('city')
+                        <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="rf-col full">
+                <label>Your Review</label>
+                <textarea name="review"
+                          rows="4"
+                          placeholder="Share your experience with this product…"
+                          required>{{ old('review') }}</textarea>
+                @error('review')
+                    <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group review-media-upload" style="grid-column: 1 / -1; margin-top: 10px;">
+                <label for="reviewMedia" class="r-upload-btn"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+                           background: rgba(201, 168, 76, 0.1); border: 1px dashed var(--gold);
+                           border-radius: 4px; cursor: pointer; color: var(--text-mid);
+                           font-size: 0.9rem; transition: background 0.2s;">
+                    <i class="fas fa-camera"></i> Add Photos / Video
+                </label>
+                <input type="file"
+                       id="reviewMedia"
+                       name="reviewMedia[]"
+                       accept="image/*,video/mp4,video/webm"
+                       multiple
+                       style="display:none;"
+                       onchange="handleReviewMedia(this)">
+                <div id="reviewMediaPreview" class="r-media-preview-container"
+                     style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+                @error('reviewMedia')
+                    <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                @enderror
+                @error('reviewMedia.*')
+                    <span class="r-error" style="color:red;font-size:0.8rem;">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <button type="submit" class="btn-wa-cta" style="border:none;cursor:pointer;margin-top:14px;">
+            <i class="fas fa-paper-plane" style="margin-right:6px;"></i> Submit Review
+        </button>
+
+        @if (session('review_success'))
+            <div class="review-success" style="margin-top:12px; color:green;">
+                <i class="fas fa-check-circle"></i> {{ session('review_success') }}
+            </div>
+        @endif
+
+    </form>
+</div>
         </div>
 
     </div>
@@ -333,19 +391,21 @@
 <!-- ══════════════ TABS ══════════════ -->
 <section class="tabs-section">
     <div class="tabs-header">
-        <button class="tab-btn active" onclick="switchTab(this,'tab-reviews')" id="tab-reviews-btn"><i
-                class="fas fa-star"></i> Reviews (24)</button>
-        <button class="tab-btn" onclick="switchTab(this,'tab-desc')"><i class="fas fa-align-left"></i>
-            Description</button>
-        <!-- <button class="tab-btn" onclick="switchTab(this,'tab-specs')"><i class="fas fa-list-ul"></i>
-            Specifications</button> -->
-        <button class="tab-btn" onclick="switchTab(this,'tab-shipping')"><i class="fas fa-truck"></i> Shipping &
-            Care</button>
-        <button class="tab-btn" onclick="switchTab(this,'tab-custom')"><i class="fas fa-pencil-ruler"></i> Custom
-            Orders</button>
+        <button class="tab-btn active" onclick="switchTab(this,'tab-reviews')" id="tab-reviews-btn">
+            <i class="fas fa-star"></i> Reviews ({{ $reviewCount }})
+        </button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-desc')">
+            <i class="fas fa-align-left"></i> Description
+        </button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-shipping')">
+            <i class="fas fa-truck"></i> Shipping & Care
+        </button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-custom')">
+            <i class="fas fa-pencil-ruler"></i> Custom Orders
+        </button>
     </div>
 
-    <!-- ─── REVIEWS TAB ─── -->
+    <!-- ─── DESCRIPTION TAB ─── -->
     <div class="tab-panel" id="tab-desc">
         <div class="desc-content">
             <div class="desc-text">
@@ -374,320 +434,114 @@
                 </ul>
             </div>
             <div class="desc-image">
-                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="Royal Tri-Shikhara Mandir Detail" />
+                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
+                     alt="{{ $product->name }} Detail" />
             </div>
         </div>
     </div>
 
-    <!-- ─── SPECIFICATIONS TAB ─── -->
-    <!-- <div class="tab-panel" id="tab-specs">
-        <div class="specs-grid">
-
-            <div class="spec-card">
-                <div class="spec-card-header"><i class="fas fa-ruler-combined"></i> Dimensions</div>
-                <table class="spec-table">
-                    <tr>
-                        <td>Width (Front)</td>
-                        <td>36 inches (91 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Depth (Side)</td>
-                        <td>24 inches (61 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Total Height</td>
-                        <td>72 inches (183 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Sanctum Width</td>
-                        <td>28 inches (71 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Sanctum Height</td>
-                        <td>36 inches (91 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Platform Height</td>
-                        <td>20 inches (51 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Step Width</td>
-                        <td>36 inches (91 cm)</td>
-                    </tr>
-                    <tr>
-                        <td>Step Height</td>
-                        <td>4 inches each (3 steps)</td>
-                    </tr>
-                    <tr>
-                        <td>Cabinet Height</td>
-                        <td>16 inches (41 cm)</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="spec-card">
-                <div class="spec-card-header"><i class="fas fa-gem"></i> Material & Finish</div>
-                <table class="spec-table">
-                    <tr>
-                        <td>Material</td>
-                        <td>Grade-A Makrana White Marble</td>
-                    </tr>
-                    <tr>
-                        <td>Marble Origin</td>
-                        <td>Makrana, Nagaur, Rajasthan</td>
-                    </tr>
-                    <tr>
-                        <td>Marble Grade</td>
-                        <td>Premium Grade-A (Crystalline)</td>
-                    </tr>
-                    <tr>
-                        <td>Default Finish</td>
-                        <td>High-gloss machine polish</td>
-                    </tr>
-                    <tr>
-                        <td>Optional Finishes</td>
-                        <td>Gold paint, Multicolour, Natural polish</td>
-                    </tr>
-                    <tr>
-                        <td>Veining</td>
-                        <td>Minimal (near-white)</td>
-                    </tr>
-                    <tr>
-                        <td>Thickness (walls)</td>
-                        <td>1.5 – 2 inches</td>
-                    </tr>
-                    <tr>
-                        <td>Base Thickness</td>
-                        <td>3 inches solid</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="spec-card">
-                <div class="spec-card-header"><i class="fas fa-weight-hanging"></i> Weight & Logistics</div>
-                <table class="spec-table">
-                    <tr>
-                        <td>Approximate Weight</td>
-                        <td>280 – 320 kg (assembled)</td>
-                    </tr>
-                    <tr>
-                        <td>No. of Pieces</td>
-                        <td>12 – 15 components</td>
-                    </tr>
-                    <tr>
-                        <td>Assembly Time</td>
-                        <td>3–5 hours (2 persons)</td>
-                    </tr>
-                    <tr>
-                        <td>Packaging</td>
-                        <td>Wooden crate with foam padding</td>
-                    </tr>
-                    <tr>
-                        <td>Transport Mode</td>
-                        <td>Surface (LTL / full truck)</td>
-                    </tr>
-                    <tr>
-                        <td>Lead Time</td>
-                        <td>6–8 weeks from order</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="spec-card">
-                <div class="spec-card-header"><i class="fas fa-hammer"></i> Carving & Craftsmanship</div>
-                <table class="spec-table">
-                    <tr>
-                        <td>Carving Method</td>
-                        <td>100% Hand Carved</td>
-                    </tr>
-                    <tr>
-                        <td>Artisan Experience</td>
-                        <td>20+ years</td>
-                    </tr>
-                    <tr>
-                        <td>Carving Hours</td>
-                        <td>~320 man-hours</td>
-                    </tr>
-                    <tr>
-                        <td>Tools Used</td>
-                        <td>Chisels, grinders, hand files</td>
-                    </tr>
-                    <tr>
-                        <td>Motifs</td>
-                        <td>Peacock, Swastika, Lotus, Floral</td>
-                    </tr>
-                    <tr>
-                        <td>Columns</td>
-                        <td>Twisted rope + lotus capital</td>
-                    </tr>
-                    <tr>
-                        <td>Customisation</td>
-                        <td>Yes – any size or deity motif</td>
-                    </tr>
-                    <tr>
-                        <td>Certificate</td>
-                        <td>Authenticity card included</td>
-                    </tr>
-                </table>
-            </div>
-
-        </div>
-    </div> -->
-
-    <!-- ─── DESCRIPTION TAB ─── -->
+    <!-- ─── REVIEWS TAB ─── -->
     <div class="tab-panel active" id="tab-reviews">
 
+        <!-- ── Rating Summary ── -->
         <div class="reviews-summary">
             <div class="big-rating">
-                <div class="big-num">4.9</div>
-                <div class="big-stars">★★★★★</div>
-                <div class="big-count">Based on 24 Reviews</div>
+                <div class="big-num">{{ $reviewCount > 0 ? number_format($avgRating, 1) : '—' }}</div>
+                <div class="big-stars">
+                    @for ($i = 1; $i <= 5; $i++)
+                        {{ $i <= round($avgRating) ? '★' : '☆' }}
+                    @endfor
+                </div>
+                <div class="big-count">
+                    Based on {{ $reviewCount }} {{ Str::plural('Review', $reviewCount) }}
+                </div>
             </div>
+
             <div class="rating-bars">
-                <div class="rating-bar-row">
-                    <span class="bar-label">5 ★</span>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:88%"></div>
+                @for ($star = 5; $star >= 1; $star--)
+                    <div class="rating-bar-row">
+                        <span class="bar-label">{{ $star }} ★</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ $starCounts[$star]['pct'] }}%"></div>
+                        </div>
+                        <span class="bar-pct">{{ $starCounts[$star]['pct'] }}%</span>
                     </div>
-                    <span class="bar-pct">88%</span>
-                </div>
-                <div class="rating-bar-row">
-                    <span class="bar-label">4 ★</span>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:8%"></div>
-                    </div>
-                    <span class="bar-pct">8%</span>
-                </div>
-                <div class="rating-bar-row">
-                    <span class="bar-label">3 ★</span>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:4%"></div>
-                    </div>
-                    <span class="bar-pct">4%</span>
-                </div>
-                <div class="rating-bar-row">
-                    <span class="bar-label">2 ★</span>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:0%"></div>
-                    </div>
-                    <span class="bar-pct">0%</span>
-                </div>
-                <div class="rating-bar-row">
-                    <span class="bar-label">1 ★</span>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:0%"></div>
-                    </div>
-                    <span class="bar-pct">0%</span>
-                </div>
+                @endfor
             </div>
         </div>
 
+        <!-- ── Review Cards ── -->
         <div class="review-cards">
+            @forelse ($reviews as $review)
             <div class="review-card">
                 <div class="review-header">
                     <div class="reviewer">
-                        <div class="reviewer-avatar">R</div>
+                        <div class="reviewer-avatar">
+                            {{ strtoupper(substr($review->name, 0, 1)) }}
+                        </div>
                         <div>
-                            <div class="reviewer-name">Ramesh Agarwal</div>
-                            <div class="reviewer-loc"><i class="fas fa-map-marker-alt"></i> Mumbai, Maharashtra
+                            <div class="reviewer-name">{{ $review->name }}</div>
+                            @if ($review->city || $review->state)
+                            <div class="reviewer-loc">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ implode(', ', array_filter([$review->city, $review->state])) }}
                             </div>
+                            @endif
                         </div>
                     </div>
                     <div>
-                        <div class="review-stars">★★★★★</div>
-                        <div class="review-date">February 2026</div>
+                        <div class="review-stars">
+                            @for ($i = 1; $i <= 5; $i++)
+                                {{ $i <= $review->rating ? '★' : '☆' }}
+                            @endfor
+                        </div>
+                        <div class="review-date">{{ $review->created_at->format('F Y') }}</div>
                     </div>
                 </div>
-                <p class="review-text">The mandir arrived perfectly packed and exceeded all our expectations. The
-                    carving details are extraordinary — it looks exactly like the photos from the Rajasthan temples
-                    we had seen. Every peacock feather, every lotus petal is individually carved. Our puja room is
-                    now truly complete. Rana Marble's team was patient and helpful throughout.</p>
 
-                <!-- NEW MEDIA GALLERY GRID -->
+                <p class="review-text">{{ $review->review }}</p>
+
+                {{-- Media grid — photos & videos --}}
+                @if (!empty($review->media) && count($review->media))
                 <div class="review-media-grid">
-                    <img src="./img/hero.png" class="r-media-item" onclick="openReviewMediaLightbox(this)"
-                        alt="Review Image">
-                    <div class="r-media-item video"
-                        onclick="openReviewMediaLightbox(this, 'video', 'https://www.w3schools.com/html/mov_bbb.mp4')">
-                        <img src="./img/hero2.png" style="width: 100%; height:100%; object-fit: cover;"
-                            alt="Review Video Thumb">
-                        <div class="r-play-btn"><i class="fas fa-play"></i></div>
-                    </div>
-                </div>
+                    @foreach ($review->media as $mediaPath)
+                        @php
+                            $ext     = strtolower(pathinfo($mediaPath, PATHINFO_EXTENSION));
+                            $isVideo = in_array($ext, ['mp4', 'webm']);
+                            $url     = Storage::url($mediaPath);
+                        @endphp
 
-                <div class="review-verified"><i class="fas fa-check-circle"></i> Verified Customer</div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer">
-                        <div class="reviewer-avatar">S</div>
-                        <div>
-                            <div class="reviewer-name">Sunita & Rajesh Sharma</div>
-                            <div class="reviewer-loc"><i class="fas fa-map-marker-alt"></i> Delhi, NCR</div>
+                        @if ($isVideo)
+                        <div class="r-media-item video"
+                             onclick="openReviewMediaLightbox(this, 'video', '{{ $url }}')">
+                            <video src="{{ $url }}"
+                                   style="width:100%;height:100%;object-fit:cover;pointer-events:none;"
+                                   preload="metadata" muted playsinline></video>
+                            <div class="r-play-btn"><i class="fas fa-play"></i></div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <div class="review-date">January 2026</div>
-                    </div>
+                        @else
+                        <img src="{{ $url }}"
+                             class="r-media-item"
+                             onclick="openReviewMediaLightbox(this)"
+                             alt="Review photo by {{ $review->name }}" />
+                        @endif
+                    @endforeach
                 </div>
-                <p class="review-text">We ordered the 48-inch version with gold painting for our new house puja
-                    room. Rana Marble understood our vision perfectly. The quality of marble is unmatched — it glows
-                    beautifully in diya light. The team even sent us daily progress photos during the 7 weeks of
-                    carving. Highly highly recommend.</p>
+                @endif
 
-                <!-- NEW MEDIA GALLERY GRID -->
-                <div class="review-media-grid">
-                    <img src="./img/hero2.png" class="r-media-item" onclick="openReviewMediaLightbox(this)"
-                        alt="Review Image">
+                @if ($review->customer_id)
+                <div class="review-verified">
+                    <i class="fas fa-check-circle"></i> Verified Customer
                 </div>
-
-                <div class="review-verified"><i class="fas fa-check-circle"></i> Verified Customer</div>
+                @endif
             </div>
 
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer">
-                        <div class="reviewer-avatar">P</div>
-                        <div>
-                            <div class="reviewer-name">Priya Menon</div>
-                            <div class="reviewer-loc"><i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <div class="review-date">December 2025</div>
-                    </div>
-                </div>
-                <p class="review-text">Third purchase from Rana Marble. First was a small mandir, then a Ganesh
-                    idol, now this flagship piece. Each time the quality and craftsmanship has been flawless. This
-                    mandir is the most beautiful thing in our home. The marble feels alive — pure, luminous, divine.
-                </p>
-                <div class="review-verified"><i class="fas fa-check-circle"></i> Verified Customer</div>
+            @empty
+            <div style="padding:40px 0; text-align:center; color:var(--text-mid, #888);">
+                <i class="fas fa-star" style="font-size:2rem; opacity:0.3;"></i>
+                <p style="margin-top:12px;">No reviews yet. Be the first to share your experience!</p>
             </div>
-
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer">
-                        <div class="reviewer-avatar">V</div>
-                        <div>
-                            <div class="reviewer-name">Vijay Patel</div>
-                            <div class="reviewer-loc"><i class="fas fa-map-marker-alt"></i> Ahmedabad, Gujarat</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="review-stars">★★★★☆</div>
-                        <div class="review-date">November 2025</div>
-                    </div>
-                </div>
-                <p class="review-text">Excellent product and genuine Makrana marble. The only reason for 4 stars is
-                    delivery took slightly longer than estimated, but the team kept us informed throughout. The
-                    mandir itself is simply breathtaking. Our family does puja twice daily and it feels truly
-                    sacred.</p>
-                <div class="review-verified"><i class="fas fa-check-circle"></i> Verified Customer</div>
-            </div>
+            @endforelse
         </div>
     </div>
 
@@ -716,7 +570,7 @@
         <div class="ship-note">
             <strong>Delivery Timeline:</strong> Handcrafted-to-order products take <strong>6–8 weeks</strong> to
             carve and finish, followed by <strong>7–14 days</strong> for delivery. Total: 7–10 weeks from order
-            confirmation. <br /><br />
+            confirmation.<br /><br />
             <strong>Marble Care:</strong> Clean with a soft damp cloth. Avoid acidic cleaners (lemon, vinegar). For
             deep cleaning, use mild soap and warm water. Polish annually with marble polishing powder. Keep away
             from direct water ingress. The natural luminosity of Makrana marble only improves with time and care.
@@ -753,11 +607,22 @@
                 </div>
             </div>
             <div class="desc-image">
-                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="Gold Painted Custom Marble Mandir" />
+                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
+                     alt="Gold Painted Custom Marble Mandir" />
             </div>
         </div>
     </div>
+
 </section>
+
+
+
+
+
+
+
+
+
 
 <!-- ══════════════ RELATED PRODUCTS ══════════════ -->
 <section class="related-section">
@@ -1027,6 +892,44 @@
             maximumFractionDigits: 2
         });
     }
+</script>
+
+<script>
+    // ── Star Rating ───────────────────────────────────────────────────────────
+    (function () {
+        const stars  = document.querySelectorAll('#starPicker .stars-input i');
+        const hidden = document.getElementById('selectedRating');
+
+        if (!stars.length || !hidden) return;
+
+        // Restore state on page load (e.g. after validation fail with old('rating'))
+        const saved = parseInt(hidden.value) || 0;
+        if (saved > 0) paintStars(saved);
+
+        // Hover — preview
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', () => paintStars(parseInt(star.dataset.val)));
+            star.addEventListener('mouseleave', () => paintStars(parseInt(hidden.value) || 0));
+        });
+
+        // Click — lock in value
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const val    = parseInt(star.dataset.val);
+                hidden.value = val;
+                paintStars(val);
+            });
+        });
+
+        function paintStars(upTo) {
+            stars.forEach(s => {
+                const v = parseInt(s.dataset.val);
+                s.classList.toggle('fas', v <= upTo);   // filled
+                s.classList.toggle('far', v > upTo);    // empty
+                s.style.color = v <= upTo ? 'var(--gold, #c9a84c)' : '';
+            });
+        }
+    })();
 </script>
 
 @endsection

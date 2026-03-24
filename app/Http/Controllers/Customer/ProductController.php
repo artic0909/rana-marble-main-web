@@ -101,7 +101,7 @@ class ProductController extends Controller
 
         $pincodes = Pincode::all();
 
-        $categoryWiseAllProducts = Product::with(['category', 'variants.color', 'variants.size'])
+        $categoryWiseAllProducts = Product::with(['category', 'variants.color', 'variants.size', 'wishlists'])
             ->where('status', 'active')
             ->latest()
             ->get();
@@ -111,6 +111,7 @@ class ProductController extends Controller
             'images',
             'variants.size',
             'variants.color',
+            'wishlists',
         ])
             ->where('slug', $slug)
             ->where('status', 'active')
@@ -123,6 +124,40 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('product-detail', compact('product', 'related', 'categories', 'pincodes', 'categoryWiseAllProducts'));
+        // ── Reviews ───────────────────────────────────────────────────────────────
+        $reviews = \App\Models\Review::where('product_id', $product->id)
+            ->where('status', 'approved')
+            ->latest()
+            ->get();
+
+        $reviewCount = $reviews->count();
+
+        // Average rating (rounded to 1 decimal)
+        $avgRating = $reviewCount > 0
+            ? round($reviews->avg('rating'), 1)
+            : 0;
+
+        // Count per star level → percentage for bar chart
+        $starCounts = [];
+        for ($i = 5; $i >= 1; $i--) {
+            $count           = $reviews->where('rating', $i)->count();
+            $starCounts[$i]  = [
+                'count' => $count,
+                'pct'   => $reviewCount > 0 ? round(($count / $reviewCount) * 100) : 0,
+            ];
+        }
+        // ─────────────────────────────────────────────────────────────────────────
+
+        return view('product-detail', compact(
+            'product',
+            'related',
+            'categories',
+            'pincodes',
+            'categoryWiseAllProducts',
+            'reviews',
+            'reviewCount',
+            'avgRating',
+            'starCounts',
+        ));
     }
 }

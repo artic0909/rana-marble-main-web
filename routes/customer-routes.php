@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\ContactController;
 use App\Http\Controllers\Customer\IndexController;
@@ -15,6 +16,9 @@ Route::get('/', [IndexController::class, 'index'])->name('home');
 Route::get('/about', [CustomerController::class, 'about'])->name('about');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Reviews ==========================================================================
+Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
 
 
