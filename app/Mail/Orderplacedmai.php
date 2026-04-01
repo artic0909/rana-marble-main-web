@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Orderplacedmai extends Mailable
 {
@@ -53,6 +54,11 @@ class Orderplacedmai extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $pdf = Pdf::loadView('invoice.invoice', ['order' => $this->order]);
+        
+        return [
+            Attachment::fromData(fn () => $pdf->output(), 'Invoice-' . $this->order->order_number . '.pdf')
+                ->withMime('application/pdf'),
+        ];
     }
 }
