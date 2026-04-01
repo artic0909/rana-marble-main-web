@@ -51,10 +51,18 @@
                                         <span style="font-family:'Crimson Pro',serif;font-size:0.82rem;color:var(--text-light);">
                                             Added {{ $item->created_at->diffForHumans() }}
                                         </span>
+                                        @guest
                                         <a href="{{ route('product.detail', $item->product->slug) }}"
                                             class="btn-add-list">
                                             View Product
                                         </a>
+                                        @endguest
+                                        @auth
+                                        <a href="{{ route('customer.product.detail', $item->product->slug) }}"
+                                            class="btn-add-list">
+                                            View Product
+                                        </a>
+                                        @endauth
                                     </div>
                                 </div>
 
@@ -73,18 +81,10 @@
                             font-family:'Crimson Pro',serif;font-size:1.1rem;">
                             Your wishlist is empty.
                         </p>
-                        @guest
-                        <a href="{{ route('product.all') }}" class="btn-primary"
-                            style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
-                            <i class="fas fa-store"></i> Browse Products
-                        </a>
-                        @endguest
-                        @auth
                         <a href="{{ route('customer.product.all') }}" class="btn-primary"
                             style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
                             <i class="fas fa-store"></i> Browse Products
                         </a>
-                        @endauth
                     </div>
                     @endforelse
 
@@ -163,7 +163,7 @@
                         font-family:'Crimson Pro',serif;font-size:1.1rem;">
                         Your wishlist is empty.
                     </p>
-                    <a href="{{ route('product.all') }}" class="btn-primary"
+                    <a href="{{ route('customer.product.all') }}" class="btn-primary"
                         style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
                         <i class="fas fa-store"></i> Browse Products
                     </a>

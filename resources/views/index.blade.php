@@ -184,37 +184,37 @@
         </div>
 
         <div class="cat-grid">
-            <a href="mandirs.html" class="cat-card">
+            <a href="#" class="cat-card">
                 <div class="cat-icon-wrap">
                     <div class="cat-icon"><i class="fas fa-place-of-worship"></i></div>
                     <div class="cat-name">Home Mandirs<span class="cat-count">30+ Designs</span></div>
                 </div>
             </a>
-            <a href="idols.html" class="cat-card">
+            <a href="#" class="cat-card">
                 <div class="cat-icon-wrap">
                     <div class="cat-icon"><i class="fas fa-hands-praying"></i></div>
                     <div class="cat-name">Marble Idols<span class="cat-count">50+ Idols</span></div>
                 </div>
             </a>
-            <a href="pillars.html" class="cat-card">
+            <a href="#" class="cat-card">
                 <div class="cat-icon-wrap">
                     <div class="cat-icon"><i class="fas fa-columns"></i></div>
                     <div class="cat-name">Pillars & Columns<span class="cat-count">15+ Styles</span></div>
                 </div>
             </a>
-            <a href="wall-panels.html" class="cat-card">
+            <a href="#" class="cat-card">
                 <div class="cat-icon-wrap">
                     <div class="cat-icon"><i class="fas fa-border-all"></i></div>
                     <div class="cat-name">Jaali Panels<span class="cat-count">20+ Patterns</span></div>
                 </div>
             </a>
-            <a href="fountains.html" class="cat-card">
+            <a href="#" class="cat-card">
                 <div class="cat-icon-wrap">
                     <div class="cat-icon"><i class="fas fa-water"></i></div>
                     <div class="cat-name">Marble Fountains<span class="cat-count">10+ Designs</span></div>
                 </div>
             </a>
-            <a href="custom.html" class="cat-card">
+            <a href="#" class="cat-card">
                 <div class="cat-icon-wrap">
                     <div class="cat-icon"><i class="fas fa-pencil-ruler"></i></div>
                     <div class="cat-name">Custom Orders<span class="cat-count">Any Design</span></div>

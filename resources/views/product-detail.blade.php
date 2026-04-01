@@ -37,11 +37,10 @@
                     <span class="g-badge bestseller">✦ {{ $product->category->name }}</span>
                 </div>
                 @guest
-                <button class="wish-main" id="wishMainBtn"
-                    onclick="event.stopPropagation(); toggleMainWish()"
-                    title="Add to Wishlist">
+                <a href="{{route('login')}}" class="wish-main" id="wishMainBtn"
+                    title="Add to Wishlist" style="text-decoration: none;">
                     <i class="fas fa-heart"></i>
-                </button>
+                </a>
                 @endguest
                 @auth
                 <button class="wish-main" id="wishMainBtn"
@@ -226,12 +225,12 @@
        Add to Cart
         </button>
 
-        <a href="mailto:info@ranamarblee.com?subject=Enquiry: {{ $product->name }}"
+        <a href="mailto:ruidas82ramesh@gmail.com?subject=Enquiry: {{ $product->name }} (SKU: {{ $product->sku }}) &body=Namaste! I am interested in {{ $product->name }} (SKU: {{ $product->sku }}) url: {{ url()->current() }}. Please provide more details about the product, pricing, and delivery options. Thank you! "
             class="btn-email-cta btn-buy-now">
             <i class="fas fa-envelope mobile-hide-icon"></i> Buy Now
         </a>
 
-        <a href="https://wa.me/919876543210?text=Namaste! I am interested in {{ $product->name }} (SKU: {{ $product->sku }})."
+        <a href="https://wa.me/917364957139?text=Namaste! I am interested in {{ $product->name }} (SKU: {{ $product->sku }}). Please provide more details about the product, pricing, and delivery options. url: {{ url()->current() }}. Thank you!"
             class="btn-wa-cta btn-enquiry" target="_blank">
             <i class="fab fa-whatsapp fa-lg mobile-hide-icon"></i> Enquiry
         </a>
@@ -635,7 +634,7 @@
 
         <div class="related-carousel" id="relatedCarousel">
             @foreach($categoryWiseAllProducts as $product)
-            <div class="product-card">
+            <div class="product-card" style="background: #1b0b06 !important;">
                 <div class="product-img-wrap">
                     <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
                     <div class="prod-badge">{{ $product->category->name }}</div>
@@ -657,9 +656,9 @@
                     </div>
                 </div>
                 <div class="prod-info">
-                    <div class="prod-name">{{ $product->name }}</div>
+                    <div class="prod-name" style="color: #c9a84c !important;">{{ $product->name }}</div>
                     <div class="prod-meta"><a href="{{ route('product.detail', $product->slug) }}" class="btn-add-list"
-                            style="width: 100%; margin-top: 8px;">ADD TO CART</a>
+                            style="width: 100%; margin-top: 8px; color: #c9a84c !important;">ADD TO CART</a>
                     </div>
                 </div>
             </div>
@@ -930,6 +929,40 @@
             });
         }
     })();
+</script>
+
+<script>
+function toggleWishlist(btn, productId) {
+    fetch(`/wishlist/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success && data.redirect) {
+            window.location.href = data.redirect;
+            return;
+        }
+
+        if (data.success) {
+            if (data.added) {
+                btn.style.color = 'var(--saffron)';
+                btn.title = 'Remove from Wishlist';
+            } else {
+                btn.style.color = '';
+                btn.title = 'Add to Wishlist';
+            }
+
+            // Optional: show toast/flash
+            showToast(data.message);
+        }
+    })
+    .catch(err => console.error('Wishlist error:', err));
+}
+
 </script>
 
 @endsection

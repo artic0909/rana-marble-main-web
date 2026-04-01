@@ -116,7 +116,7 @@
                             font-family:'Crimson Pro',serif;font-size:1.1rem;">
                             You have no orders yet.
                         </p>
-                        <a href="{{ route('product.all') }}" class="btn-primary"
+                        <a href="{{ route('customer.product.all') }}" class="btn-primary"
                             style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
                             <i class="fas fa-store"></i> Browse Products
                         </a>

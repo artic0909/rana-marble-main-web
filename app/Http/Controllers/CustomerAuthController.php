@@ -135,4 +135,9 @@ class CustomerAuthController extends Controller
         $categories = Category::orderBy('name')->get();
         return view('forgetpassword', compact('categories'));
     }
+
+    public function forgetpasswordPost(Request $request)
+    {
+        
+    }
 }

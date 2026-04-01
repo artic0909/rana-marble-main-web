@@ -285,9 +285,16 @@
     <i class="fas fa-heart"></i>
 </button>
 @endauth
+                        @guest
                         <a href="{{ route('product.detail', $product->slug) }}" class="action-btn" title="View Details">
                             <i class="fas fa-eye"></i>
                         </a>
+                        @endguest
+                        @auth
+                        <a href="{{ route('customer.product.detail', $product->slug) }}" class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        @endauth
                         @php
                         $phone = \App\Models\Setting::get('store_phone');
                         $message = urlencode(
@@ -316,10 +323,18 @@
                         @endif
                     </p>
                     @endif
+                    @guest
                     <div class="product-meta" style="margin-top: 10px;">
                         <a href="{{ route('product.detail', $product->slug) }}"
                             class="btn-add-list" style="width: 100%;">ADD TO LIST</a>
                     </div>
+                    @endguest
+                    @auth
+                    <div class="product-meta" style="margin-top: 10px;">
+                        <a href="{{ route('customer.product.detail', $product->slug) }}"
+                            class="btn-add-list" style="width: 100%;">ADD TO CART</a>
+                    </div>
+                    @endauth
                 </div>
             </div>
             @endforeach

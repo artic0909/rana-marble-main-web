@@ -77,14 +77,14 @@
                 <p style="margin-top:16px;color:var(--text-light);font-family:'Crimson Pro',serif;font-size:1.1rem;">
                     Your cart is empty.
                 </p>
-                <a href="{{ route('product.all') }}" class="btn-secondary" style="margin-top:16px;">
+                <a href="{{ route('customer.product.all') }}" class="btn-secondary" style="margin-top:16px;">
                     <i class="fas fa-store"></i> Browse Products
                 </a>
             </div>
             @endforelse
 
             <div class="cart-actions-bottom">
-                <a href="{{ route('product.all') }}" class="btn-secondary">
+                <a href="{{ route('customer.product.all') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left"></i> Continue Shopping
                 </a>
             </div>
@@ -320,7 +320,7 @@ function recalcSummary() {
                     <p style="margin-top:16px;color:var(--text-light);font-family:'Crimson Pro',serif;font-size:1.1rem;">
                         Your cart is empty.
                     </p>
-                    <a href="{{ route('product.all') }}" class="btn-secondary" style="margin-top:16px;display:inline-flex;">
+                    <a href="{{ route('customer.product.all') }}" class="btn-secondary" style="margin-top:16px;display:inline-flex;">
                         <i class="fas fa-store"></i> Browse Products
                     </a>
                 </div>
