@@ -7,6 +7,8 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMail;
 
 class CustomerAuthController extends Controller
 {
@@ -52,12 +54,18 @@ class CustomerAuthController extends Controller
             'confirm_password' => 'required|same:password',
         ]);
 
-        Customer::create([
+        $customer = Customer::create([
             'name'     => $request->first_name . ' ' . $request->last_name,
             'email'    => $request->email,
             'phone'    => $request->phone,
             'password' => bcrypt($request->password),
         ]);
+
+        // Send Welcome Mail to Customer
+        Mail::to($customer->email)->send(new WelcomeMail($customer));
+
+        // Send Notification to Admin
+        Mail::to('ruidas82ramesh@gmail.com')->send(new WelcomeMail($customer, true));
 
         return redirect()->route('login')
             ->with('success', 'Account created successfully! Please sign in.');
