@@ -31,6 +31,9 @@ Route::get('/register', [CustomerAuthController::class, 'register'])->name('regi
 Route::post('/register', [CustomerAuthController::class, 'registerPost'])->name('register.post');
 
 Route::get('/forgetpassword', [CustomerAuthController::class, 'forgetpassword'])->name('forgetpassword');
+Route::post('/forgetpassword/send-otp', [CustomerAuthController::class, 'sendOtp'])->name('forgetpassword.send-otp');
+Route::post('/forgetpassword/verify-otp', [CustomerAuthController::class, 'verifyOtp'])->name('forgetpassword.verify-otp');
+Route::post('/forgetpassword/reset', [CustomerAuthController::class, 'forgetpasswordPost'])->name('forgetpassword.reset');
 
 
 

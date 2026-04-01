@@ -517,7 +517,7 @@
                     <i class="fas fa-paper-plane"></i> Send OTP
                 </button>
             </form>
-            <a class="auth-back" href="login.html">
+            <a class="auth-back" href="{{ route('login') }}">
                 <i class="fas fa-arrow-left"></i> Back to Login
             </a>
         </div>
@@ -671,41 +671,133 @@
         });
     }
 
-    /* ── Step 1 → 2 ── */
-    function goToStep2(e) {
+    /* ── Step 1 → 2: Send OTP ── */
+    async function goToStep2(e) {
         e.preventDefault();
         const email = document.getElementById('fp-email').value.trim();
         if (!email) return;
-        document.getElementById('emailDisplay').textContent = email;
-        showStep(2);
-        setTimeout(() => document.getElementById('otp1').focus(), 400);
+
+        const btn = e.target.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch("{{ route('forgetpassword.send-otp') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('emailDisplay').textContent = email;
+                showStep(2);
+                setTimeout(() => document.getElementById('otp1').focus(), 400);
+            } else {
+                alert(data.message || 'Error sending OTP. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 
-    /* ── Step 2 → 3 ── */
-    function goToStep3() {
+    /* ── Step 2 → 3: Verify OTP ── */
+    async function goToStep3() {
         const digits = ['otp1', 'otp2', 'otp3', 'otp4'].map(id => document.getElementById(id).value);
         if (digits.some(d => d === '' || isNaN(d))) {
             alert('Please enter all 4 digits of the OTP.');
             return;
         }
-        showStep(3);
-        setTimeout(() => document.getElementById('new-password').focus(), 400);
+
+        const otpCode = digits.join('');
+        const btn = document.querySelector('#step2 .btn-auth');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch("{{ route('forgetpassword.verify-otp') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ otp: otpCode })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showStep(3);
+                setTimeout(() => document.getElementById('new-password').focus(), 400);
+            } else {
+                alert(data.message || 'Invalid OTP. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 
-    /* ── Step 3 → Success ── */
-    function resetPassword(e) {
+    /* ── Step 3 → Success: Reset Password ── */
+    async function resetPassword(e) {
         e.preventDefault();
         const np = document.getElementById('new-password').value;
         const cp = document.getElementById('confirm-password').value;
+
         if (np !== cp) {
             alert('Passwords do not match. Please try again.');
             return;
         }
-        if (np.length < 6) {
-            alert('Password must be at least 6 characters.');
+        if (np.length < 8) {
+            alert('Password must be at least 8 characters.');
             return;
         }
-        showStep(4);
+
+        const btn = e.target.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch("{{ route('forgetpassword.reset') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    new_password: np,
+                    confirm_password: cp
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showStep(4);
+            } else {
+                alert(data.message || 'Error resetting password. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 
     /* ── Go back ── */

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail;
+use App\Mail\Otpmail;
+use Carbon\Carbon;
 
 class CustomerAuthController extends Controller
 {
@@ -144,8 +146,104 @@ class CustomerAuthController extends Controller
         return view('forgetpassword', compact('categories'));
     }
 
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:customers,email',
+        ], [
+            'email.exists' => 'We could not find an account with that email address.',
+        ]);
+
+        $otp = rand(1000, 9999);
+        $email = $request->email;
+
+        // Store OTP in session with expiration
+        session([
+            'password_reset_email' => $email,
+            'password_reset_otp'   => $otp,
+            'password_reset_expires_at' => Carbon::now()->addMinutes(10),
+        ]);
+
+        // Send OTP Mail
+        Mail::to($email)->send(new Otpmail($otp));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP has been sent to your email.',
+        ]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|numeric|digits:4',
+        ]);
+
+        $storedOtp = session('password_reset_otp');
+        $expiresAt = session('password_reset_expires_at');
+
+        if (!$storedOtp || Carbon::now()->greaterThan($expiresAt)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP has expired. Please request a new one.',
+            ], 422);
+        }
+
+        if ($request->otp != $storedOtp) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The OTP you entered is incorrect.',
+            ], 422);
+        }
+
+        // Mark as verified
+        session(['password_reset_verified' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP verified successfully.',
+        ]);
+    }
+
     public function forgetpasswordPost(Request $request)
     {
-        
+        $request->validate([
+            'new_password'     => 'required|string|min:8',
+            'confirm_password' => 'required|same:new_password',
+        ]);
+
+        if (!session('password_reset_verified')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access. Please verify your OTP first.',
+            ], 403);
+        }
+
+        $email = session('password_reset_email');
+        $customer = Customer::where('email', $email)->first();
+
+        if (!$customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again.',
+            ], 404);
+        }
+
+        $customer->update([
+            'password' => bcrypt($request->new_password),
+        ]);
+
+        // Clear session data
+        session()->forget([
+            'password_reset_email',
+            'password_reset_otp',
+            'password_reset_expires_at',
+            'password_reset_verified'
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your password has been reset successfully.',
+        ]);
     }
 }
