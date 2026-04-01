@@ -11,6 +11,8 @@ use App\Models\Pincode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Orderplacedmai;
 
 class OrderController extends Controller
 {
@@ -103,6 +105,15 @@ class OrderController extends Controller
 
             DB::commit();
 
+            // Send Emails (Load items and customer for the mail view)
+            $order->load(['items', 'customer']);
+            
+            // Mail to Customer
+            Mail::to($customer->email)->send(new Orderplacedmai($order));
+            
+            // Mail to Admin
+            Mail::to('ruidas82ramesh@gmail.com')->send(new Orderplacedmai($order, true));
+
             return redirect()->route('customer.orders')
                 ->with('success', "Order {$orderNumber} placed successfully!");
         } catch (\Exception $e) {
@@ -118,6 +129,6 @@ class OrderController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('customer.invoice', compact('order'));
+        return view('invoice.invoice', compact('order'));
     }
 }
