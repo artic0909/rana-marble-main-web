@@ -43,29 +43,27 @@
                             class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
-
+            @guest
             <!-- Quick Links -->
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="index.html"><i class="fas fa-chevron-right"
+                    <li><a href="{{ route('home') }}"><i class="fas fa-chevron-right"
                                 style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Home</a></li>
-                    <li><a href="products.html"><i class="fas fa-chevron-right"
+                    <li><a href="{{ route('product.all') }}"><i class="fas fa-chevron-right"
                                 style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> All Products</a>
                     </li>
-                    <li><a href="mandirs.html"><i class="fas fa-chevron-right"
-                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Mandirs</a></li>
-                    <li><a href="idols.html"><i class="fas fa-chevron-right"
-                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Marble Idols</a>
+                    <li><a href="{{ route('about') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> About Us</a></li>
+                    <li><a href="{{ route('contact') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Contact Us</a>
                     </li>
-                    <li><a href="custom.html"><i class="fas fa-chevron-right"
-                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Custom Orders</a>
+                    <li><a href="{{ route('login') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i>Orders</a>
                     </li>
-                    <li><a href="wishlist.html"><i class="fas fa-chevron-right"
+                    <li><a href="{{ route('login') }}"><i class="fas fa-chevron-right"
                                 style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> My Wishlist</a>
                     </li>
-                    <li><a href="about.html"><i class="fas fa-chevron-right"
-                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> About Us</a></li>
                 </ul>
             </div>
 
@@ -73,15 +71,47 @@
             <div class="footer-col">
                 <h4>Categories</h4>
                 <ul>
-                    <li><a href="#">Home Mandirs</a></li>
-                    <li><a href="#">Temple Mandirs</a></li>
-                    <li><a href="#">Gold Painted</a></li>
-                    <li><a href="#">Marble Idols</a></li>
-                    <li><a href="#">Jaali Panels</a></li>
-                    <li><a href="#">Pillars & Columns</a></li>
-                    <li><a href="#">Marble Fountains</a></li>
+                    @foreach ($categories as $category)
+                    <li><a href="{{ route('product.all.category', $category->slug) }}">{{ $category->name }}</a></li>
+                    @endforeach
                 </ul>
             </div>
+            @endguest
+
+            @auth
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ route('customer.home') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Home</a></li>
+                    <li><a href="{{ route('customer.product.all') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> All Products</a>
+                    </li>
+                    <li><a href="{{ route('customer.about') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> About Us</a></li>
+                    <li><a href="{{ route('customer.contact') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> Contact Us</a>
+                    </li>
+                    <li><a href="{{ route('customer.orders') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i>Orders</a>
+                    </li>
+                    <li><a href="{{ route('customer.wishlist') }}"><i class="fas fa-chevron-right"
+                                style="font-size:0.7rem;color:var(--saffron);margin-right:6px;"></i> My Wishlist</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Categories -->
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    @foreach ($categories as $category)
+                    <li><a href="{{ route('customer.product.all.category', $category->slug) }}">{{ $category->name }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+            @endauth
 
             <!-- Contact -->
             <div class="footer-col">

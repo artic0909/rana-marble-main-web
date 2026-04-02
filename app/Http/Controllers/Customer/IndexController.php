@@ -24,7 +24,7 @@ class IndexController extends Controller
             ->get();
 
         // Categories
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::orderBy('name')->take(6)->get();
 
         // Products
         $featuredProducts = Product::with(['category', 'variants.color', 'variants.size'])
