@@ -13,56 +13,96 @@ scrollTopBtn.addEventListener("click", (e) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* ─── Image Gallery ─── */
-/* ─── Image Gallery ─── */
-if (typeof currentImg === "undefined") var currentImg = "";
-if (typeof currentMediaType === "undefined") var currentMediaType = "image";
+/* ─── Image Gallery (Slider) ─── */
+var currentSlideIndex = 0;
 
-function switchMedia(thumb, type, src) {
-    document
-        .querySelectorAll(".thumb")
-        .forEach((t) => t.classList.remove("active"));
+function switchMedia(thumb, index) {
+    currentSlideIndex = index;
+    const slider = document.getElementById("gallerySlider");
+    const slides = slider.querySelectorAll(".gallery-slide");
+    
+    // Update thumbnails
+    document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
     thumb.classList.add("active");
+    
+    // Scroll thumbnail into view
+    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
-    const img = document.getElementById("mainImg");
-    const video = document.getElementById("mainVideo");
-    const zoomHint = document.getElementById("zoomHint");
+    // Scroll slider to the correct slide
+    if (slides[index]) {
+        slider.scrollTo({
+            left: slides[index].offsetLeft,
+            behavior: 'smooth'
+        });
+    }
 
-    currentImg = src;
-    currentMediaType = type;
-
-    // Simple fade out transition for current media
-    img.style.opacity = "0";
-    video.style.opacity = "0";
-
-    setTimeout(() => {
-        if (type === "video") {
-            img.style.display = "none";
-            zoomHint.style.display = "none";
-            video.style.display = "block";
-            video.src = src; // set src directly on <video>, not <source>
-            video.load();
-            video.play().catch((e) => console.log("Auto-play prevented", e));
-            video.style.opacity = "1";
-        } else {
-            video.style.display = "none";
-            video.pause();
-            img.style.display = "block";
-            zoomHint.style.display = "block";
-            img.src = src;
-            img.style.opacity = "1";
+    // Handle video auto-play logic if needed
+    slides.forEach((slide, idx) => {
+        const video = slide.querySelector("video");
+        if (video) {
+            if (idx === index) {
+                // Potential auto-play on scroll
+                // video.play().catch(() => {}); 
+            } else {
+                video.pause();
+            }
         }
-    }, 180);
+    });
 }
 
-// Wrapper for existing onclick calls in main image wrap
-function openLightbox(src) {
-    if (currentMediaType === "video") {
-        openReviewMediaLightbox(null, "video", currentImg);
+// Global lightbox opener that works with slides
+function openLightbox(src, type) {
+    if (type === "video") {
+        openReviewMediaLightbox(null, "video", src);
     } else {
-        openReviewMediaLightbox(null, "image", currentImg);
+        openReviewMediaLightbox(null, "image", src);
     }
 }
+
+function navigateGallery(direction) {
+    const thumbnails = document.querySelectorAll(".thumbnails .thumb");
+    let nextIndex = currentSlideIndex + direction;
+    
+    if (nextIndex >= thumbnails.length) nextIndex = 0;
+    if (nextIndex < 0) nextIndex = thumbnails.length - 1;
+
+    if (thumbnails[nextIndex]) {
+        thumbnails[nextIndex].click();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const slider = document.getElementById("gallerySlider");
+    const thumbnails = document.querySelectorAll(".thumbnails .thumb");
+
+    if (slider) {
+        // Sync thumbnails when swiping manually
+        let isScrolling;
+        slider.addEventListener('scroll', () => {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(() => {
+                const index = Math.round(slider.scrollLeft / slider.offsetWidth);
+                if (index !== currentSlideIndex && thumbnails[index]) {
+                    currentSlideIndex = index;
+                    // Update thumbnails active state without triggering a scroll jump
+                    thumbnails.forEach(t => t.classList.remove("active"));
+                    thumbnails[index].classList.add("active");
+                    thumbnails[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }, 100);
+        });
+
+        // Auto-change every 5 seconds
+        let galleryInterval = setInterval(() => navigateGallery(1), 5000);
+
+        slider.addEventListener("mouseenter", () => clearInterval(galleryInterval));
+        slider.addEventListener("mouseleave", () => {
+            clearInterval(galleryInterval);
+            galleryInterval = setInterval(() => navigateGallery(1), 5000);
+        });
+        slider.addEventListener("touchstart", () => clearInterval(galleryInterval), { passive: true });
+    }
+});
 
 /* ─── Lightbox ─── */
 function openReviewMediaLightbox(element, type = "image", srcOverride = null) {
