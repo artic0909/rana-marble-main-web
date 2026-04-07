@@ -268,8 +268,10 @@
                 data-price="{{ $product->variants->isNotEmpty() ? (int)$product->variants->min('price') : 0 }}">
 
                 <div class="product-img-wrap">
-                    <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
+                    <a href="{{ route('product.detail', $product->slug) }}">
+                        <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
                         alt="{{ $product->name }}" loading="lazy" />
+                    </a>
                     <div class="product-badge">{{ $product->category->name }}</div>
                     <div class="product-actions">
                         @guest

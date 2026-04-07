@@ -86,7 +86,9 @@
             @foreach($featuredProducts as $product)
             <div class="product-card">
                 <div class="product-img-wrap">
-                    <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
+                    <a href="{{ route('product.detail', $product->slug) }}">
+                        <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}" alt="{{ $product->name }}" loading="lazy" />
+                    </a>
                     <div class="product-badge">Bestseller</div>
                     <div class="product-actions">
                                                 @guest

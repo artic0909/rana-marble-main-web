@@ -613,8 +613,10 @@
                 @foreach($categoryWiseAllProducts as $product)
                     <div class="product-card" style="background: #1b0b06 !important;">
                         <div class="product-img-wrap">
-                            <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
+                            <a href="{{ route('product.detail', $product->slug) }}">
+                                <img src="{{ $product->main_image ? Storage::url($product->main_image) : '' }}"
                                 alt="{{ $product->name }}" loading="lazy" />
+                            </a>
                             <div class="prod-badge">{{ $product->category->name }}</div>
                             <div class="prod-actions">
                                 @guest
