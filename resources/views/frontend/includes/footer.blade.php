@@ -149,13 +149,42 @@
         </div>
     </footer>
 
-    <!-- Floating WhatsApp -->
-    <a href="https://wa.me/{{ $phone }}?text={{ $message }}" class="float-wa"
-        target="_blank" title="Chat on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <!-- Floating Contact Menu -->
+    <div class="contact-floater-wrap">
+        <div class="contact-menu" id="contactMenu">
+            <a href="tel:{{ $phone }}" class="floater-contact-item tel" title="Call Us">
+                <i class="fas fa-phone"></i>
+                <span class="floater-contact-label">Call Now</span>
+            </a>
+            <a href="https://wa.me/{{ $phone }}?text={{ $message }}" 
+               class="floater-contact-item wa" 
+               target="_blank" 
+               title="Chat on WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+                <span class="floater-contact-label">WhatsApp</span>
+            </a>
+        </div>
+        <button class="float-contact-toggle" id="contactToggle" title="Contact Us">
+            <i class="fab fa-whatsapp main-icon"></i>
+            <i class="fas fa-times close-icon"></i>
+        </button>
+    </div>
+
+    <script>
+        document.getElementById('contactToggle').addEventListener('click', function() {
+            this.parentElement.classList.toggle('active');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const wrap = document.querySelector('.contact-floater-wrap');
+            if (!wrap.contains(e.target)) {
+                wrap.classList.remove('active');
+            }
+        });
+    </script>
 
     <!-- Scroll to Top -->
-    <a href="#" class="scroll-top" id="scrollTop" title="Back to Top">
+    <!-- <a href="#" class="scroll-top" id="scrollTop" title="Back to Top">
         <i class="fas fa-chevron-up"></i>
-    </a>
+    </a> -->
