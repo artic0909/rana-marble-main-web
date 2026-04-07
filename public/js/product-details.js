@@ -22,11 +22,24 @@ function switchMedia(thumb, index) {
     const slides = slider.querySelectorAll(".gallery-slide");
     
     // Update thumbnails
-    document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
-    thumb.classList.add("active");
+    const thumbnails = document.querySelectorAll(".thumbnails .thumb");
+    thumbnails.forEach(t => t.classList.remove("active"));
+    if (thumb) {
+        thumb.classList.add("active");
+    } else if (thumbnails[index]) {
+        thumbnails[index].classList.add("active");
+    }
+
+    // Update dots
+    const dots = document.querySelectorAll(".gallery-dots .dot");
+    dots.forEach(d => d.classList.remove("active"));
+    if (dots[index]) dots[index].classList.add("active");
     
     // Scroll thumbnail into view
-    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    const activeThumb = thumb || thumbnails[index];
+    if (activeThumb) {
+        activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
 
     // Scroll slider to the correct slide
     if (slides[index]) {
@@ -84,10 +97,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const index = Math.round(slider.scrollLeft / slider.offsetWidth);
                 if (index !== currentSlideIndex && thumbnails[index]) {
                     currentSlideIndex = index;
-                    // Update thumbnails active state without triggering a scroll jump
+                    // Update thumbnails active state
                     thumbnails.forEach(t => t.classList.remove("active"));
                     thumbnails[index].classList.add("active");
                     thumbnails[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+                    // Update dots
+                    const dots = document.querySelectorAll(".gallery-dots .dot");
+                    dots.forEach(d => d.classList.remove("active"));
+                    if (dots[index]) dots[index].classList.add("active");
                 }
             }, 100);
         });

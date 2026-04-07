@@ -77,6 +77,16 @@
                     <div class="zoom-hint" id="zoomHint">
                         <i class="fas fa-search-plus"></i> Click to Zoom
                     </div>
+
+                    {{-- Counting Dots --}}
+                    <div class="gallery-dots" id="galleryDots">
+                        <span class="dot active" data-index="0" onclick="switchMedia(null, 0)"></span>
+                        @php $dotIdx = 1; @endphp
+                        @foreach($product->images as $media)
+                            <span class="dot" data-index="{{ $dotIdx }}" onclick="switchMedia(null, {{ $dotIdx }})"></span>
+                            @php $dotIdx++; @endphp
+                        @endforeach
+                    </div>
                 </div>
 
                 <!-- Thumbnails -->
