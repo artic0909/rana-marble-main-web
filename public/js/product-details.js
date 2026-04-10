@@ -1,17 +1,20 @@
 /* ─── Nav ─── */
 function toggleMobileNav() {
-    document.getElementById("mobileNav").classList.toggle("open");
+    const nav = document.getElementById("mobileNav");
+    if (nav) nav.classList.toggle("open");
 }
 
 /* ─── Scroll Top ─── */
-const scrollTopBtn = document.getElementById("scrollTop");
-window.addEventListener("scroll", () => {
-    scrollTopBtn.classList.toggle("visible", window.scrollY > 400);
-});
-scrollTopBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-});
+const galleryScrollTopBtn = document.getElementById("scrollTop");
+if (galleryScrollTopBtn) {
+    window.addEventListener("scroll", () => {
+        galleryScrollTopBtn.classList.toggle("visible", window.scrollY > 400);
+    });
+    galleryScrollTopBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+}
 
 /* ─── Image Gallery (Slider) ─── */
 var currentSlideIndex = 0;
@@ -89,26 +92,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const thumbnails = document.querySelectorAll(".thumbnails .thumb");
 
     if (slider) {
-        // Sync thumbnails when swiping manually
+        console.log("Gallery slider initialized with bounding-box intersection check.");
+        const slides = slider.querySelectorAll(".gallery-slide");
+        const dots = document.querySelectorAll(".gallery-dots .dot");
+        
         let isScrolling;
         slider.addEventListener('scroll', () => {
             window.clearTimeout(isScrolling);
             isScrolling = setTimeout(() => {
-                const index = Math.round(slider.scrollLeft / slider.offsetWidth);
-                if (index !== currentSlideIndex && thumbnails[index]) {
-                    currentSlideIndex = index;
-                    // Update thumbnails active state
-                    thumbnails.forEach(t => t.classList.remove("active"));
-                    thumbnails[index].classList.add("active");
-                    thumbnails[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                const containerRect = slider.getBoundingClientRect();
+                let maxVisibleWidth = 0;
+                let activeIndex = 0;
 
-                    // Update dots
-                    const dots = document.querySelectorAll(".gallery-dots .dot");
-                    dots.forEach(d => d.classList.remove("active"));
-                    if (dots[index]) dots[index].classList.add("active");
+                slides.forEach((slide, i) => {
+                    const rect = slide.getBoundingClientRect();
+                    // Calculate how much of this slide is visible within the container
+                    const visibleWidth = Math.min(rect.right, containerRect.right) - Math.max(rect.left, containerRect.left);
+                    
+                    if (visibleWidth > maxVisibleWidth) {
+                        maxVisibleWidth = visibleWidth;
+                        activeIndex = i;
+                    }
+                });
+
+                // Update if the active slide has changed
+                if (activeIndex !== currentSlideIndex) {
+                    currentSlideIndex = activeIndex;
+
+                    // Sync Dots
+                    dots.forEach((d, i) => d.classList.toggle("active", i === activeIndex));
+
+                    // Sync Thumbnails
+                    thumbnails.forEach((t, i) => {
+                        const isActive = (i === activeIndex);
+                        t.classList.toggle("active", isActive);
+                        if (isActive) {
+                            t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        }
+                    });
                 }
-            }, 100);
-        });
+            }, 50);
+        }, { passive: true });
 
         // Auto-change every 5 seconds
         let galleryInterval = setInterval(() => navigateGallery(1), 5000);
