@@ -28,7 +28,7 @@
                 <div class="contact-icon-wrap"><i class="fas fa-map-marker-alt"></i></div>
                 <div class="contact-details">
                     <h3>Our Workshop</h3>
-                    <p>Near Makrana Marble Mandi,<br>Makrana, Nagaur,<br>Rajasthan – 341505</p>
+                    <p>{{ \App\Models\Setting::get('store_address') }}</p>
                 </div>
             </div>
 
