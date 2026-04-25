@@ -402,6 +402,24 @@
                     <h3><i class="fas fa-om"></i> About {{ $product->name }}</h3>
                     <p>{{ $product->description }}</p>
 
+<h3 style="margin-top:20px;"><i class="fas fa-layer-group"></i> Creation Process</h3>
+<ul>
+    <li><strong>Stone Base:</strong> Pure Marble – Highest grade stone base</li>
+    <li><strong>Industrial Bonding:</strong> Araldite &amp; Faviquick – Industrial strength bonding</li>
+    <li><strong>Foundation:</strong> White Cement – Rock solid structural foundation</li>
+    <li><strong>Surface:</strong> White Primer – Ultra smooth flawless surface</li>
+    <li><strong>Coating:</strong> Epoxy Color – Premium bright white coating</li>
+    <li><strong>Finish:</strong> Fabric Golden – Rich luxurious golden fabric finish</li>
+    <li><strong>Shine:</strong> Epoxy Burnish – Ultra high-gloss mirror shine</li>
+    <li><strong>Colors:</strong>
+        <ul>
+            <li>Pure White – Full marble base &amp; structure</li>
+            <li>Luxurious Gold – Sun Om, Swastik panels, arch borders, pillar highlights &amp; shikhara detailing</li>
+            <li>Silver White</li>
+        </ul>
+    </li>
+</ul>
+
                     <h3 style="margin-top:20px;"><i class="fas fa-carving"></i> Carving Details</h3>
                     <ul>
                         <li>Triple shikhara spires with traditional kalash finials</li>
