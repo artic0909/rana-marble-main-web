@@ -34,6 +34,8 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="canonical" href="https://www.ranamarble.info{{ request()->getPathInfo() }}" />
+
 
     <!-- {{-- Per-page SEO (set from any view using @section) --}} -->
     <meta name="description" content="@yield('meta_description', \App\Models\Setting::get('meta_description', ''))">
