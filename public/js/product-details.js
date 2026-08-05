@@ -41,7 +41,13 @@ function switchMedia(thumb, index) {
     // Scroll thumbnail into view
     const activeThumb = thumb || thumbnails[index];
     if (activeThumb) {
-        activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        const container = activeThumb.closest('.thumbnails');
+        if (container) {
+            container.scrollTo({
+                left: activeThumb.offsetLeft - container.clientWidth / 2 + activeThumb.clientWidth / 2,
+                behavior: 'smooth'
+            });
+        }
     }
 
     // Scroll slider to the correct slide
@@ -127,7 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         const isActive = (i === activeIndex);
                         t.classList.toggle("active", isActive);
                         if (isActive) {
-                            t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                            const container = t.closest('.thumbnails');
+                            if (container) {
+                                container.scrollTo({
+                                    left: t.offsetLeft - container.clientWidth / 2 + t.clientWidth / 2,
+                                    behavior: 'smooth'
+                                });
+                            }
                         }
                     });
                 }
