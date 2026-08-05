@@ -344,13 +344,29 @@ body {
 }
 
 .thumbnails {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
   gap: 10px;
   margin-top: 14px;
+  padding-bottom: 8px;
+}
+
+.thumbnails::-webkit-scrollbar {
+  height: 6px;
+}
+.thumbnails::-webkit-scrollbar-track {
+  background: var(--cream-dk);
+  border-radius: 3px;
+}
+.thumbnails::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 3px;
 }
 
 .thumb {
+  flex: 0 0 calc(25% - 7.5px);
+  scroll-snap-align: start;
   aspect-ratio: 1;
   border-radius: 6px;
   overflow: hidden;
