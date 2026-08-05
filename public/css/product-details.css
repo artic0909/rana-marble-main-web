@@ -834,10 +834,10 @@ body {
   background: linear-gradient(135deg, #25d366, #128c7e);
   color: white;
   font-family: "Cinzel", serif;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 15px 24px;
+  padding: 18px 28px;
   border-radius: 6px;
   text-decoration: none;
   transition: all 0.25s;
@@ -861,10 +861,10 @@ body {
   background: linear-gradient(135deg, var(--saffron), var(--maroon));
   color: white;
   font-family: "Cinzel", serif;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 15px 24px;
+  padding: 18px 28px;
   border-radius: 6px;
   text-decoration: none;
   transition: all 0.25s;

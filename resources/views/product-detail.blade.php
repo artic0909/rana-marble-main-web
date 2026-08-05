@@ -193,34 +193,42 @@
                     </div>
                 </div>
 
-                <!-- Pincode Input -->
-                {{-- Pass pincodes to JS --}}
-                @php
-                    $pincodesJson = $pincodes->map(fn($p) => [
-                        'name' => (string) $p->name,
-                        'fees' => (float) $p->fees,
-                    ])->values();
-                @endphp
-                <script>
-                    window.PINCODES = {!!json_encode($pincodesJson)!!};
-                </script>
-                <div class="variant-section">
-                    <div class="variant-label">
-                        <i class="fas fa-map-marker-alt" style="color:var(--saffron);"></i> Delivery Pincode
-                    </div>
-                    <div class="pincode-row">
-                        <input type="text" id="pincodeInput" placeholder="Enter 6-digit Pincode" maxlength="6"
-                            inputmode="numeric" oninput="validatePincode()" />
-                        <button class="btn-email-cta" onclick="checkDelivery()">
-                            <i class="fas fa-truck"></i> Check
-                        </button>
-                    </div>
-                    <div id="deliveryResult" style="margin-top:10px;font-size:0.85rem;"></div>
-                </div>
 
-                <p class="product-short-desc">
-                    {{ $product->description }}
-                </p>
+
+                <div class="product-short-desc-container">
+                    <p class="product-short-desc" id="prodDesc">
+                        {{ $product->description }}
+                    </p>
+                    <span id="readMoreBtn" onclick="toggleDescription()" style="color:var(--saffron); cursor:pointer; font-size: 0.9rem; font-weight: bold; display: none; margin-bottom: 24px;">...Read More</span>
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const desc = document.getElementById('prodDesc');
+                        const readMoreBtn = document.getElementById('readMoreBtn');
+                        
+                        setTimeout(() => {
+                            if (desc.scrollHeight > desc.clientHeight || desc.textContent.trim().length > 150) {
+                                desc.style.display = '-webkit-box';
+                                desc.style.webkitLineClamp = '3';
+                                desc.style.webkitBoxOrient = 'vertical';
+                                desc.style.overflow = 'hidden';
+                                desc.style.marginBottom = '5px';
+                                readMoreBtn.style.display = 'inline-block';
+                            }
+                        }, 100);
+                    });
+                    function toggleDescription() {
+                        const desc = document.getElementById('prodDesc');
+                        const btn = document.getElementById('readMoreBtn');
+                        if (desc.style.webkitLineClamp === '3') {
+                            desc.style.webkitLineClamp = 'unset';
+                            btn.textContent = 'Read Less';
+                        } else {
+                            desc.style.webkitLineClamp = '3';
+                            btn.textContent = '...Read More';
+                        }
+                    }
+                </script>
 
                 <!-- CTA Buttons -->
                 <form class="cta-row" id="addToCartForm" action="{{ route('customer.cart.add') }}" method="POST">
@@ -232,14 +240,9 @@
                         Add to Cart
                     </button>
 
-                    <a href="mailto:ruidas82ramesh@gmail.com?subject=Enquiry: {{ $product->name }} (SKU: {{ $product->sku }}) &body=Namaste! I am interested in {{ $product->name }} (SKU: {{ $product->sku }}) url: {{ url()->current() }}. Please provide more details about the product, pricing, and delivery options. Thank you! "
-                        class="btn-email-cta btn-buy-now">
-                        <i class="fas fa-envelope mobile-hide-icon"></i> Buy Now
-                    </a>
-
                     <a href="https://wa.me/917364957139?text=Namaste! I am interested in {{ $product->name }} (SKU: {{ $product->sku }}). Please provide more details about the product, pricing, and delivery options. url: {{ url()->current() }}. Thank you!"
                         class="btn-wa-cta btn-enquiry" target="_blank">
-                        <i class="fab fa-whatsapp fa-lg mobile-hide-icon"></i> Enquiry
+                        <i class="fab fa-whatsapp fa-lg mobile-hide-icon"></i> WhatsApp Enquiry
                     </a>
                 </form>
 
