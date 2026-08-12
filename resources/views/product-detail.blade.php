@@ -607,7 +607,7 @@
                         <li>Custom jaali patterns and perforated screens</li>
                     </ul>
                     <div style="margin-top:24px;">
-                        <a href="https://wa.me/919876543210?text=Namaste! I want to enquire about a custom marble mandir order."
+                        <a href="https://wa.me/917364957139?text=Namaste! I want to enquire about a custom marble mandir order."
                             class="btn-wa-cta" target="_blank" style="display:inline-flex;text-decoration:none;">
                             <i class="fab fa-whatsapp fa-lg"></i> Discuss Custom Order on WhatsApp
                         </a>
